@@ -19,14 +19,14 @@ app.config['UPLOAD_FOLDER'] = 'uploads'
 db = SQLAlchemy(app)
 
 #---MODELS---
-class user(db.model):
+class user(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(70), nullable=False)
-    email = db.Column(db.Sting(80), nullable=False, unique=True)
+    email = db.Column(db.String(80), nullable=False, unique=True)
     password = db.Column(db.String(40), nullable=False)
 
-class document( db.model):
-    id = db.Column(db.Integer, primary_key=True, auto_increment=True)
+class document( db.Model):
+    id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable = False)
     filename = db.Column(db.String(120), nullable = False)
     processed_text = db.Column(db.Text, nullable = False)
@@ -41,7 +41,7 @@ def index():
 def register():
     data = request.json
     hashed_pwd = generate_password_hash(data['password'])
-    new_user = User(username=data['useranme'], email=data['email'], password=hashed_pwd)
+    new_user = User(username=data['username'], email=data['email'], password=hashed_pwd)
     db.session.add(new_user)
     db.session.commit()
     return jsonify({"message": "User registered successfully"})
@@ -62,15 +62,15 @@ def upload_pdf():
     os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)
     path = os.path.join(app.config["UPLOAD_FOLDER"], file.filename)
     file.save(path)
-    
-    text=""
+
+    text = ""
     with fitz.open(path) as doc:
         for page in doc:
             text += page.get_text()
     document = Document(user_id=user_id, filename=file.filename, processed_text=text)
     db.session.add(document)
     db.commit()
-    return jsonify({" message": "PDF uploaded successfully","text": [:500]})
+    return jsonify({"message": "PDF uploaded successfully","text": text[:500]})
 
 
 @app.route("/youtube/transcribe", methods = ["POST"])
@@ -95,8 +95,8 @@ def summarize():
 def mcq():
     text = request.json["text"]
     blob = Textblob(text)
-    keywords = [word for word, tag in blob.tags if tag = "NN"]
-    mcqs = [{"q": f":What is {word}?", "a": "A"}, for word in keywords[:5]]
+    keywords = [word for word, tag in blob.tags if tag == "NN"]
+    mcqs = [{"q": f"What is {word}?", "a": "A"} for word in keywords[:5]]
     return jsonify({"mcqs": mcqs})
 
 
@@ -104,11 +104,11 @@ def mcq():
 def flashcards():
     text = request.json["text"]
     words = text.split()[:5]
-    flashcards = [{"text": word , "definition": f"Explain{word}"}, for word in words]
+    flashcards = [{"text": word , "definition": f"Explain{word}"} for word in words]
     return jsonify({"flashcards": flashcards})
 
 if __name__ == "__main__":
-    with app.app_content():
+    with app.app_context():
         db.create_all()
     app.run(debug=True)
 

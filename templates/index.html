@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>BrainyBot</title>
+    <script src="/static/app.js"></script>
+</head>
+<body>
+    <h2>Login</h2>
+    <input id="email" placeholder="Email">
+    <input id="password" placeholder="Password">
+    <button onclick="login()">Login</button>
+
+    <h2>Upload PDF</h2>
+    <input type="file" id="pdfFile"><button onclick="uploadPDF()">Upload</button>
+
+    <h2>YouTube Transcription</h2>
+    <input id="youtubeLink" placeholder="Paste YouTube URL"><button onclick="transcribe()">Transcribe</button>
+
+    <pre id="output"></pre>
+</body>
+</html>

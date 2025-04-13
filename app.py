@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, send_file, render_template
+from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -15,6 +15,7 @@ CORS(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:root@localhost/brainybot'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['UPLOAD_FOLDER'] = 'uploads'
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16 MB
 
 db = SQLAlchemy(app)
 
@@ -64,12 +65,16 @@ def upload_pdf():
     file.save(path)
 
     text = ""
-    with fitz.open(path) as doc:
-        for page in doc:
-            text += page.get_text()
-    document = Document(user_id=user_id, filename=file.filename, processed_text=text)
+    try:
+        with fitz.open(path) as doc:
+            for page in doc:
+                text += page.get_text()
+    except Exception as e:
+        return jsonify({"error": "Failed to process PDF", "details": str(e)}), 500
+    
+    document = document(user_id=user_id, filename=file.filename, processed_text=text)
     db.session.add(document)
-    db.commit()
+    db.session.commit()
     return jsonify({"message": "PDF uploaded successfully","text": text[:500]})
 
 

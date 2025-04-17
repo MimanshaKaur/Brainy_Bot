@@ -6,7 +6,7 @@ import os, fitz, whisper
 from sumy.parsers.plaintext import PlaintextParser
 from sumy.nlp.tokenizers import Tokenizer
 from sumy.summarizers.lsa import LsaSummarizer
-from textblob import TextBlob
+from textblob import TextBlob as textblob
 
 app= Flask(__name__)
 CORS(app)
@@ -17,16 +17,16 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['UPLOAD_FOLDER'] = 'uploads'
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16 MB
 
-db = SQLAlchemy(app)
+db = SQLAlchemy()
 
 #---MODELS---
-class user(db.Model):
+class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(70), nullable=False)
     email = db.Column(db.String(80), nullable=False, unique=True)
     password = db.Column(db.String(40), nullable=False)
 
-class document( db.Model):
+class document(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable = False)
     filename = db.Column(db.String(120), nullable = False)
@@ -51,8 +51,8 @@ def register():
 def login():
     data = request.json
     user = User.query.filter_by(email = data['email']).first()
-    if user and check_password_hash(user.password, data['password']):
-        return jsonify({"message": "Login Successful", "user_id": user.id})
+    if user and check_password_hash(User.password, data['password']):
+        return jsonify({"message": "Login Successful", "user_id": User.id})
     else:
         return jsonify({"message": "Invalid credentials"}), 401
 
@@ -99,10 +99,10 @@ def summarize():
 @app.route("/mcq", methods = ["POST"])
 def mcq():
     text = request.json["text"]
-    blob = Textblob(text)
+    blob = textblob(text)
     keywords = [word for word, tag in blob.tags if tag == "NN"]
     mcqs = [{"q": f"What is {word}?", "a": "A"} for word in keywords[:5]]
-    return jsonify({"mcqs": mcqs})
+    return jsonify({"MCQs": mcqs})
 
 
 @app.route("/flashcards", methods = ["POST"])

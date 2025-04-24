@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-=======
 import os
 import uuid
 import fitz
@@ -215,4 +213,3 @@ def download_transcript():
 
 if __name__ == '__main__':
     app.run(debug=True)
->>>>>>> 4958dac78548103882d9fc5776fa9039bfcc89bc

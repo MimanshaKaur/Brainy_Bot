@@ -1,6 +1,6 @@
 import os
 import uuid
-import fitz                            # PyMuPDF
+import fitz
 from flask import Flask, render_template, request, redirect,url_for, session, flash
 from werkzeug.utils import secure_filename
 from chatbot import ask_gemini

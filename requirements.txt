@@ -1,0 +1,7 @@
+Flask
+PyMuPDF
+faiss-cpu
+sentence-transformers
+transformers
+torch
+textblob

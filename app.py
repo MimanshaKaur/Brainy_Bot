@@ -116,15 +116,14 @@ def process_youtube():
     video_id = match.group(1)
 
     # Paths
-    audio_filename = f"{video_id}.mp3"
-    audio_path = os.path.join("uploads", audio_filename)
-
+    audio_filename = f"{video_id}"
+    audio_output_path = os.path.abspath(os.path.join("uploads", audio_filename))
     # Download audio using yt-dlp
     ffmpeg_path = r"C:/Users/Mimansha/OneDrive/Documents/GitHub/practice/ffmpeg-7.1.1-essentials_build/ffmpeg-7.1.1-essentials_build/bin"
 
     ydl_opts = {
         'format': 'bestaudio/best',
-        'outtmpl': audio_path,
+        'outtmpl': audio_output_path,
         'ffmpeg_location': ffmpeg_path,
         'postprocessors': [{
             'key': 'FFmpegExtractAudio',
@@ -142,11 +141,14 @@ def process_youtube():
         flash(f"Error downloading video: {e}")
         return redirect(url_for('youtube'))
 
+    audio_path = f"{audio_output_path}.mp3"
+
     # Transcribe using Whisper
     try:
         model = whisper.load_model("base")
-        result = model.transcribe(audio_path, language="auto")
+        result = model.transcribe(audio_path)
         transcript = result["text"]
+
     except Exception as e:
         flash(f"Error transcribing video: {e}")
         return redirect(url_for('youtube'))
@@ -174,8 +176,8 @@ def process_youtube():
 @app.route('/ask_youtube', methods=['POST'])
 def ask_youtube():
     question = request.form.get('question')
-    transcript = session.get('youtube_transcript')
-    video_id = session.get('youtube_video_id')
+    transcript = session.get(session['youtube_transcript'])
+    video_id = session.get(session['youtube_video_id'])
 
     if not transcript or not video_id:
         flash("No transcript found. Please upload a video first.")

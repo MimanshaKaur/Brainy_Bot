@@ -2,10 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Gemini Smart Study Assistant</title>
+  <title>BRAINYBOT</title>
 </head>
 <body>
-  <h1>Gemini Smart Study Assistant</h1>
+  <h1>Smart Study Assistant</h1>
 
   {% with messages = get_flashed_messages() %}
     {% if messages %}
@@ -16,15 +16,6 @@
       </ul>
     {% endif %}
   {% endwith %}
-
-  <!-- ==== NAVIGATION ==== -->
-  <nav>
-    <form action="{{ url_for('youtube') }}" method="get">
-      <button type="submit">Go to YouTube Chat Feature</button>
-    </form>
-  </nav>
-
-  <hr>
 
   <!-- ==== SIMPLE CHATBOT ==== -->
   <h2>Ask the Bot (General Questions)</h2>
@@ -58,6 +49,19 @@
       <button type="submit">Ask from PDF</button>
     </form>
   {% endif %}
+    <br><hr>
+
+  <!-- ==== NAVIGATION FOR YOUTUBE CHAT FEATURE ==== -->
+  <nav>
+    <h2>Chat with YouTube Video</h2>
+    <form action="{{ url_for('youtube') }}" method="get">
+      <button type="submit">Go to YouTube Chat Feature</button>
+    </form>
+  </nav>
+
+  <hr>
+
+
 
 </body>
 </html>

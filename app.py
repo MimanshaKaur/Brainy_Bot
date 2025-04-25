@@ -21,6 +21,8 @@ pdf_texts = {}
 
 # ——— existing routes ———
 @app.route('/')
+def home():
+    return render_template('home.html')
 def index():
     # Tell template if a PDF is loaded
     pdf_loaded = ("pdf_uuid" in session)
@@ -32,7 +34,7 @@ def ask():
     question = request.form.get('question')
     if not question:
         flash("Please enter a question.")
-        return redirect(url_for('index'))
+        return redirect(url_for('home'))
 
     prompt = question
     if 'pdf_uuid' in session:
@@ -117,13 +119,13 @@ def process_youtube():
 
     # Paths
     audio_filename = f"{video_id}"
-    audio_output_path = os.path.abspath(os.path.join("uploads", audio_filename))
+    audio_path = os.path.join("uploads", audio_filename)
     # Download audio using yt-dlp
-    ffmpeg_path = r"C:/Users/Mimansha/OneDrive/Documents/GitHub/practice/ffmpeg-7.1.1-essentials_build/ffmpeg-7.1.1-essentials_build/bin"
+    ffmpeg_path = r"C:/Users/Mimansha/OneDrive/Documents/GitHub/practice/ffmpeg-7.1.1-essentials_build/ffmpeg-7.1.1-essentials_build/bin/ffmpeg.exe"
 
     ydl_opts = {
         'format': 'bestaudio/best',
-        'outtmpl': audio_output_path,
+        'outtmpl': audio_path,
         'ffmpeg_location': ffmpeg_path,
         'postprocessors': [{
             'key': 'FFmpegExtractAudio',
@@ -141,7 +143,6 @@ def process_youtube():
         flash(f"Error downloading video: {e}")
         return redirect(url_for('youtube'))
 
-    audio_path = f"{audio_output_path}.mp3"
 
     # Transcribe using Whisper
     try:

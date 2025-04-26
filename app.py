@@ -22,11 +22,19 @@ pdf_texts = {}
 # ——— existing routes ———
 @app.route('/')
 def home():
-    return render_template('home.html')
+    pdf_loaded = ("pdf_uuid" in session)
+    return render_template('home.html', pdf_loaded=pdf_loaded)
+
+'''
 def index():
     # Tell template if a PDF is loaded
     pdf_loaded = ("pdf_uuid" in session)
     return render_template('index.html', pdf_loaded=pdf_loaded)
+'''
+
+@app.route('/about')
+def about():
+    return render_template('about.html')
 
 #------START CHAT WITH PDF implementation--------
 @app.route('/ask', methods=['POST'])
@@ -47,7 +55,7 @@ def ask():
 
     answer = ask_gemini(prompt)
     return render_template(
-        'index.html',
+        'home.html',
         answer=answer,
         pdf_loaded=('pdf_uuid' in session)
     )
@@ -59,7 +67,7 @@ def upload_pdf():
     file = request.files.get('pdf')
     if not file or not file.filename.lower().endswith('.pdf'):
         flash("Please upload a valid PDF.")
-        return redirect(url_for('index'))
+        return redirect(url_for('home'))
 
     # If there's already one loaded, remove its text entry
     old_uuid = session.get('pdf_uuid')
@@ -82,7 +90,7 @@ def upload_pdf():
     session['pdf_uuid'] = unique_id
 
     flash("PDF uploaded and indexed. You can now ask questions about it!")
-    return redirect(url_for('index'))
+    return redirect(url_for('home'))
 
 
 # —— Optional: clear PDF ——
@@ -92,7 +100,7 @@ def clear_pdf():
     if pdf_id and pdf_id in pdf_texts:
         del pdf_texts[pdf_id]
     flash("PDF context cleared.")
-    return redirect(url_for('index'))
+    return redirect(url_for('home'))
 #------END CHAT WITH PDF implementation--------
 
 #------START CHAT WITH YOUTUBE implementation--------

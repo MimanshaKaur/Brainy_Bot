@@ -104,55 +104,93 @@
           Welcome to
           <span class="text-5xl font-semibold bg-clip-text bg-linear-to-tl from-blue-600 to-violet-600 text-transparent"> BRAINYBOT</span>
         </h1>
-        <p class="mt-5 text-gray-200 dark:text-neutral-400 text-lg">
+        <p style="margin-left: 30%" class="flex mt-5 text-gray-200 text-lg">
           Your AI-powered Smart Study Assistant
+          <svg style="margin-left: 6px;" xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#3a0ca3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bot-icon lucide-bot"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>
         </p>
         <p class="mt-3 text-gray-300 ">
           How Can I Help You Today?
         </p>
       </div>
       <!-- End Title -->
-      <!-- Textarea -->
-      <div class="max-w-4xl mx-auto sticky bottom-0 z-10 p-3 sm:py-6">
-        <!-- Input -->
-        <div class="relative mt-12">
-          <form method="post" action="{{ url_for('ask') }}">
-            <input style="position: absolute;" class="p-3 sm:p-4 pb-12 sm:pb-12 block h-30 w-full bg-black border-gray-900 rounded-lg sm:text-sm text-gray-100 focus:border-blue-500 focus:ring-blue-500" type="text" name="question" placeholder="Your question..." required>
-            <!-- Send Button -->
-            <button type="submit" style="position:relative; margin-left: 95%; margin-top: 5%;" class="inline-flex shrink-0 justify-center items-center size-8 rounded-lg text-white bg-blue-600 hover:bg-blue-500 focus:z-10 focus:outline-hidden focus:bg-blue-500">
-              <svg class="shrink-0 size-3.5" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                <path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.002.26.41a.5.5 0 0 0 .886-.083l6-15Zm-1.833 1.89L6.637 10.07l-.215-.338a.5.5 0 0 0-.154-.154l-.338-.215 7.494-7.494 1.178-.471-.47 1.178Z" />
-              </svg>
-            </button>
-          <!-- End Send Button -->
-          </form>
-          {% if answer %}
-          <h3>Answer:</h3>
-          <p>{{ answer }}</p>
-          {% endif %}
-        </div>
-        <!-- End Input -->
-      </div>
-    <!-- End Textarea -->
       <!--CARDS start-->
-      <div class="mt-10 px-8">
-        <div class="grid grid-cols-4 gap-4">
+    <div style="height: 155px; width:max-content; background-color: transparent; border: 1px dashed #ffffff6b; border-radius: 10px; margin-left: 33px; margin-top: 15px;">
+      <div class="mt-5 px-8">
+        <div class="grid grid-rows-2 grid-cols-4 gap-4">
           <div class="col-start-1 col-end-4">
-              <div style="position: absolute; height: 180px; width: 260px; background-color: #000000; border-radius: 15px; border-color: #ffffff; ">
-              </div>
+            <div style="position: absolute; align-items :center; padding-left: 15px; height: 40px; width: 230px; background-color: #0000007d;" class="flex items-center">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#3a0ca3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pencil-icon lucide-pencil"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg>
+              <div class="mx-2 text-sm text-gray-300"> Ask Complex Questions</div>
+            </div>
           </div>
           <div class="col-start-2 col-end-4">
-              <img src="static/background.jpg" alt="bgpic">
+            <div style="position: absolute; align-items :center; padding-left: 15px; height: 40px; width: 230px; background-color: #0000007d;" class="flex items-center">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#3a0ca3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-text-icon lucide-file-text"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg>
+              <div class="mx-2 text-sm text-gray-300"> Chat with PDF</div>
+            </div>
           </div>
           <div class="col-start-3 col-end-4">
-            <img src="static/background.jpg" alt="bgpic">
-        </div>
-        <div class="col-start-4 col-end-5">
-          <img src="static/background.jpg" alt="bgpic">
+            <div style="position: absolute; align-items :center; padding-left: 15px; height: 40px; width: 230px; background-color: #0000007d;" class="flex items-center">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#3a0ca3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-youtube-icon lucide-youtube"><path d="M2.5 17a24.12 24.12 0 0 1 0-10 2 2 0 0 1 1.4-1.4 49.56 49.56 0 0 1 16.2 0A2 2 0 0 1 21.5 7a24.12 24.12 0 0 1 0 10 2 2 0 0 1-1.4 1.4 49.55 49.55 0 0 1-16.2 0A2 2 0 0 1 2.5 17"/><path d="m10 15 5-3-5-3z"/></svg>
+              <div class="mx-2 text-sm text-gray-300"> Chat with YouTube</div>
+            </div>
+          </div>
+          <div class="col-start-4 col-end-4">
+            <div style="position: absolute; align-items :center; padding-left: 15px; height: 40px; width: 230px; background-color: #0000007d;" class="flex items-center">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#3a0ca3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-book-open-check-icon lucide-book-open-check"><path d="M12 21V7"/><path d="m16 12 2 2 4-4"/><path d="M22 6V4a1 1 0 0 0-1-1h-5a4 4 0 0 0-4 4 4 4 0 0 0-4-4H3a1 1 0 0 0-1 1v13a1 1 0 0 0 1 1h6a3 3 0 0 1 3 3 3 3 0 0 1 3-3h6a1 1 0 0 0 1-1v-1.3"/></svg>
+              <div class="mx-2 text-sm text-gray-300"> Summarize + Revise</div>
+            </div>
           </div>
         </div>
-      </div>      <!-- End Cards -->
-    
+      </div>
+      <div class="mt-11 px-8">
+        <div class="grid grid-rows-2 grid-cols-4 gap-4">
+          <div class="col-start-1 col-end-4">
+            <div style="position: relative; padding-top: 10px; padding-left: 15px; height: 70px; width: 275px; background-color: #0000007d;">
+              <div class="mx-2 text-sm text-gray-300">"Who won the Academy Award for Best Original Song in the year 2023?"</div>
+            </div>
+          </div>
+          <div class="col-start-2 col-end-4">
+            <div style="position: relative; padding-top: 10px; padding-left: 15px; height: 70px; width: 275px; background-color: #0000007d;">
+              <div class="mx-2 text-sm text-gray-300">Upload PDFs and ask questions based on its content.</div>
+            </div>
+          </div>
+          <div class="col-start-3 col-end-4">
+            <div style="position: relative; padding-top: 10px; padding-left: 15px; height: 70px; width: 275px; background-color: #0000007d;">
+              <div class="mx-2 text-sm text-gray-300">Add any Youtube video link and extract its relevant information.</div>
+            </div>
+          </div>
+          <div class="col-start-4 col-end-4">
+            <div style="position: relative; padding-top: 10px; padding-left: 15px; height: 70px; width: 275px; background-color: #0000007d;">
+              <div class="mx-2 text-sm text-gray-300">Summarize your PDFs + create MCQs and Flashcards for quick revision.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+      <!-- End Cards -->
+      <!-- Textarea -->
+    <div class="max-w-4xl mx-auto bottom-0 z-10 p-3 sm:py-12">
+      <!-- Input -->
+      <div class="relative mt-12">
+        <form method="post" action="{{ url_for('ask') }}">
+          <input style="position: absolute;" class="p-3 sm:p-4 pb-12 sm:pb-12 block h-30 w-full bg-black border-gray-900 rounded-lg sm:text-sm text-gray-100 focus:border-blue-500 focus:ring-blue-500" type="text" name="question" placeholder="Your question..." required>
+          <!-- Send Button -->
+          <button type="submit" style="position:relative; margin-left: 95%; margin-top: 5%;" class="inline-flex shrink-0 justify-center items-center size-8 rounded-lg text-white bg-blue-600 hover:bg-blue-500 focus:z-10 focus:outline-hidden focus:bg-blue-500">
+            <svg class="shrink-0 size-3.5" xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.002.26.41a.5.5 0 0 0 .886-.083l6-15Zm-1.833 1.89L6.637 10.07l-.215-.338a.5.5 0 0 0-.154-.154l-.338-.215 7.494-7.494 1.178-.471-.47 1.178Z" />
+            </svg>
+          </button>
+        <!-- End Send Button -->
+        </form>
+        {% if answer %}
+        <h3>Answer:</h3>
+        <p>{{ answer }}</p>
+        {% endif %}
+      </div>
+      <!-- End Input -->
+    </div>
+  <!-- End Textarea -->
   </div>
   <!-- End Content -->
   <!-- ========== END MAIN CONTENT ========== -->

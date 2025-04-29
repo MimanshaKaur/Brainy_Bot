@@ -105,6 +105,7 @@ def register():
                 db.session.add(user)
                 db.session.commit()
                 flash('User account created successfully',"SUCCESS")
+                print("registered done")
                 return redirect('/login')
         else:
             errors.append('Fill all the fields')
@@ -116,25 +117,26 @@ def register():
 def login():
     errors={}
     if request.method =='POST':
-        email= request.form.get('email')
-        password= request.form.get('password')
-        print("LOGGING IN", email,password)
-        if email and password:
-            if len(email) < 11 or '@' not in email:
+        log_email= request.form.get('email')
+        log_password= request.form.get('password')
+        print("LOGGING IN", log_email,log_password)
+        if log_email and log_password:
+            if len(log_email) < 11 or '@' not in log_email:
                 errors['email'] = 'Email is Invalid'
-                if len(errors) == 0:
-                    user = User.query.filter_by(email=email).first()
-                    if user is not None:
-                        print("User account found", user)
-                        if user.password == password:
-                            create_login_session()
-                            flash('Login successful', "SUCCESS")
-                            return redirect('/')
-                        else:
-                            errors['password'] = 'Password is invalid'
+            if len(errors) == 0:
+                user = User.query.filter_by(email= log_email).first()
+                if user is not None:
+                    print("User account found", user)
+                    if user.password == log_password:
+                        create_login_session(user)
+                        flash('Login successful', "SUCCESS")
+                        print('login successfully')
+                        return redirect('/')
                     else:
-                        errors['email']= 'Account does not exists'
-                        return redirect('/register')
+                        errors['password'] = 'Password is invalid'
+                else:
+                    errors['email']= 'Account does not exists'
+                    return redirect('/register')
         else:
             errors['email'] = 'Please fill valid details'
             errors['password'] = 'Please fill valid details'

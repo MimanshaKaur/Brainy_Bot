@@ -5,3 +5,46 @@ sentence-transformers
 transformers
 torch
 textblob
+
+
+
+
+and definitions.
+
+💡 Why BrainyBot?
+Smart: Uses OpenAI's GPT and embedding models for truly intelligent responses.
+
+Student-Centric: Designed with real academic needs in mind — from doubt-solving to revision.
+
+Easy to Use: Simple web interface with interactive chat features.
+
+Lightweight & Free: Powered by free-tier technologies and open-source tools.
+
+Multi-modal: Works with PDFs, videos, raw text, and more.
+
+🛠 Technologies Used
+Python, Flask – Backend and web server
+
+FAISS – Fast vector-based search
+
+Sentence-Transformers / OpenAI Embeddings – Understands documents and questions semantically
+
+PyMuPDF (fitz) – Extracts text from PDFs
+
+OpenAI GPT-3.5 – Generates accurate, natural answers
+
+YouTube-DLP + Whisper – Transcribes video lectures
+
+📚 Use Cases
+Exam Preparation
+
+Research Assistance
+
+Lecture Review
+
+Personal Revision Planning
+
+MCQ Practice & Flashcards for Revision
+
+👨‍💻 Built For
+Students, learners, educators, and self-taught explorers who want to study smarter, not harder.

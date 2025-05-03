@@ -189,6 +189,14 @@ def ask_pdf():
     )
 #--------END CHAT WITH PDF implementation--------
 
+#--------LOGOUT IMPLEMENTATION--------
+@app.route('/logout')
+def logout():
+    destroy_login_session()
+    flash('You are logged out','success')
+    return redirect('/')
+#--------END LOGOUT IMPLEMENTATION--------
+
 #---------APP START------------
 if __name__ == '__main__':
     # create database tables

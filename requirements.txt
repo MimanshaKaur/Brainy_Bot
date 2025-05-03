@@ -7,19 +7,3 @@ torch
 textblob
 
 
-
-
-
-📚 Use Cases
-Exam Preparation
-
-Research Assistance
-
-Lecture Review
-
-Personal Revision Planning
-
-MCQ Practice & Flashcards for Revision
-
-👨‍💻 Built For
-Students, learners, educators, and self-taught explorers who want to study smarter, not harder.

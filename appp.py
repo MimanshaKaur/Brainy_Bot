@@ -71,11 +71,13 @@ to create the project database, open terminal
         db.create_all()
 - enter twice to confirm
 '''
-
+conversation = [
+    {'question': 'What is BrainyBot?', 'answer': 'Your Perfect Study Companion!'}
+]
 @app.route('/')
 def home():
     pdf_loaded = ("pdf_uuid" in session)
-    return render_template('home.html')
+    return render_template('home.html', pdf_loaded=pdf_loaded)
 
 @app.route('/about')
 def about():
@@ -144,27 +146,25 @@ def login():
 
 #-----------START NORMAL CHAT WITH BOT------------
 
-@app.route('/ask', methods=['POST'])
+@app.route('/ask', methods=['GET', 'POST'])
 def ask():
     if 'is_logged_in' not in session:
         flash('You need to login first', 'warning')
         return redirect('/login')
-    else:
-        return redirect('/ask_question')
 
-@app.route('/ask_question', methods=['POST'])
-def ask_question():
-    question = request.form.get('question')
-    if not question:
-        flash("Please enter a question.")
-        return redirect(url_for('home'))
+    if request.method == 'POST':
+        question = request.form.get('question')
+        if not question:
+            flash("Please enter a question.")
+            return redirect(url_for('ask'))
 
-    prompt = question
-    answer = ask_gemini(prompt)
-    return render_template(
-        'home.html',
-        answer=answer
-    )
+        prompt = question
+        answer = ask_gemini(prompt)
+        conversation.append({'question': question, 'answer': answer})
+        return render_template('ask_bot.html',conversation= conversation)
+
+    # GET request will render a question form
+    return render_template('ask_bot.html')
 
 #------------END NORMAL CHAT WITH BOT--------------
 

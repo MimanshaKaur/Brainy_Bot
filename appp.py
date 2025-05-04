@@ -75,7 +75,7 @@ to create the project database, open terminal
 @app.route('/')
 def home():
     pdf_loaded = ("pdf_uuid" in session)
-    return render_template('home.html', pdf_loaded=pdf_loaded)
+    return render_template('home.html')
 
 @app.route('/about')
 def about():
@@ -149,7 +149,11 @@ def ask():
     if 'is_logged_in' not in session:
         flash('You need to login first', 'warning')
         return redirect('/login')
+    else:
+        return redirect('/ask_question')
 
+@app.route('/ask_question', methods=['POST'])
+def ask_question():
     question = request.form.get('question')
     if not question:
         flash("Please enter a question.")
@@ -159,8 +163,7 @@ def ask():
     answer = ask_gemini(prompt)
     return render_template(
         'home.html',
-        answer=answer,
-        pdf_loaded=('pdf_uuid' in session)
+        answer=answer
     )
 
 #------------END NORMAL CHAT WITH BOT--------------

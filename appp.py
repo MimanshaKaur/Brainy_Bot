@@ -164,7 +164,7 @@ def ask():
         return render_template('ask_bot.html',conversation= conversation)
 
     # GET request will render a question form
-    return render_template('ask_bot.html')
+    return render_template('ask_bot.html',conversation=conversation)
 
 #------------END NORMAL CHAT WITH BOT--------------
 

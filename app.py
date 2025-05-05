@@ -16,6 +16,8 @@ app.config['SECRET_KEY']   = os.getenv('SECRET_KEY')
 app.config['UPLOAD_FOLDER'] = 'uploads'
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
+os.environ["PATH"] += os.pathsep + r"C:/Users/Mimansha/OneDrive/Documents/GitHub/practice/ffmpeg-7.1.1-essentials_build/ffmpeg-7.1.1-essentials_build/bin"
+
 # In‑memory store of extracted PDF text
 pdf_texts = {}
 
@@ -124,16 +126,13 @@ def process_youtube():
         return redirect(url_for('youtube'))
 
     video_id = match.group(1)
+    base_filename = os.path.join("uploads", video_id)
 
-    # Paths
-    audio_filename = f"{video_id}"
-    audio_path = os.path.join("uploads", audio_filename)
-    # Download audio using yt-dlp
-    ffmpeg_path = r"C:/Users/Mimansha/OneDrive/Documents/GitHub/practice/ffmpeg-7.1.1-essentials_build/ffmpeg-7.1.1-essentials_build/bin/ffmpeg.exe"
+    ffmpeg_path = r"C:/Users/Mimansha/OneDrive/Documents/GitHub/practice/ffmpeg-7.1.1-essentials_build/ffmpeg-7.1.1-essentials_build/bin"  # your path
 
     ydl_opts = {
         'format': 'bestaudio/best',
-        'outtmpl': audio_path,
+        'outtmpl': base_filename,
         'ffmpeg_location': ffmpeg_path,
         'postprocessors': [{
             'key': 'FFmpegExtractAudio',
@@ -143,7 +142,6 @@ def process_youtube():
         'quiet': True,
     }
 
-
     try:
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             ydl.download([url])
@@ -151,23 +149,27 @@ def process_youtube():
         flash(f"Error downloading video: {e}")
         return redirect(url_for('youtube'))
 
+    audio_path = base_filename + ".mp3"
+    if not os.path.exists(audio_path):
+        flash("Audio file was not created. Something went wrong with yt_dlp or FFmpeg.")
+        return redirect(url_for('youtube'))
 
-    # Transcribe using Whisper
+    # Transcribe
     try:
         model = whisper.load_model("base")
         result = model.transcribe(audio_path)
         transcript = result["text"]
-
     except Exception as e:
         flash(f"Error transcribing video: {e}")
         return redirect(url_for('youtube'))
+
 
     # Save transcript in session and file
     session['youtube_transcript'] = transcript
     session['youtube_video_id'] = video_id
 
     # Save transcript to PDF
-    transcript_path = Path("uploads")"
+    transcript_path = Path("static/downloads")
     transcript_path.mkdir(parents=True, exist_ok=True)
 
     pdf_file = transcript_path / f"{video_id}.pdf"
@@ -179,14 +181,14 @@ def process_youtube():
         pdf.multi_cell(0, 10, line)
     pdf.output(str(pdf_file))
 
-    print("Transcription complete. Ask your questions!")
+    flash("Transcription complete. Ask your questions!")
     return render_template('youtube.html', video_id=video_id)
 
 @app.route('/ask_youtube', methods=['POST'])
 def ask_youtube():
     question = request.form.get('question')
-    transcript = session.get(session['youtube_transcript'])
-    video_id = session.get(session['youtube_video_id'])
+    transcript = session.get('youtube_transcript')
+    video_id = session.get('youtube_video_id')
 
     if not transcript or not video_id:
         flash("No transcript found. Please upload a video first.")

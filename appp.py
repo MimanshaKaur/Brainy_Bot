@@ -32,7 +32,17 @@ class pdf(db.Model):
     processed_text = db.Column(db.Text, nullable = False)
 
     def __str__(self):
-        return f'{self.filename}({self.pdf_id})'
+        return f'{self.filename}({self.pdf_uuid})'
+
+class Youtube(db.Model):
+    video_id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey(User.u_id), nullable = False)
+    video_url = db.Column(db.String(255), nullable = False)
+    transcript_text = db.Column(db.Text, nullable = False)
+
+    def __str__(self):
+        return f'{self.filename}({self.video_id})'
+
 
 #--END of Database Logic--
 # --FLASK APP logic--
@@ -78,13 +88,20 @@ conversation = [
 pdf_conversation = [
     {'pdf_question': 'Ask anything from the PDF!', 'pdf_answer': 'And get your answers instantly!'}
 ]
+
+yt_conversation = [
+    {'yt_question': 'Ask anything from the YouTube video!', 'yt_answer': 'And get your answers instantly!'}
+]
+
 # In‑memory store of extracted PDF text
 pdf_texts = {}
+yt_texts = {}
 
 @app.route('/')
 def home():
     pdf_loaded = ("pdf_uuid" in session)
-    return render_template('home.html', pdf_loaded=pdf_loaded)
+    video_added = ("video_id" in session)
+    return render_template('home.html', pdf_loaded=pdf_loaded, video_added=video_added)
 
 @app.route('/about')
 def about():
@@ -235,7 +252,7 @@ def upload_pdf():
     return redirect(url_for('ask_pdf'))
 
 
-# —— Optional: clear PDF ——
+# —— clear PDF ——
 @app.route('/clear_pdf')
 def clear_pdf():
     pdf_conversation.clear()
@@ -246,6 +263,117 @@ def clear_pdf():
     return redirect(url_for('ask_pdf'))
 #--------END CHAT WITH PDF implementation--------
 
+#--------START CHAT WITH YOUTUBE implementation--------
+
+@app.route('/process_youtube', methods=['POST'])
+def process_youtube():
+    url = request.form.get('youtube_url')
+    if not url:
+        flash("Please enter a valid YouTube URL.")
+        return redirect(url_for('ask_youtube'))
+
+    # Extract YouTube ID
+    import re
+    match = re.search(r"(?:v=|youtu\.be/)([A-Za-z0-9_-]{11})", url)
+    if not match:
+        flash("Invalid YouTube URL.")
+        return redirect(url_for('ask_youtube'))
+
+    video_id = match.group(1)
+
+    # Paths
+    audio_filename = f"{video_id}.mp3"
+    audio_path = os.path.join("uploads", audio_filename)
+
+    # Ensure the uploads folder exists
+    os.makedirs("uploads", exist_ok=True)
+
+    # Download audio using yt-dlp
+    ffmpeg_path = r"C:/Users/Mimansha/OneDrive/Documents/GitHub/practice/ffmpeg-7.1.1-essentials_build/ffmpeg-7.1.1-essentials_build/bin/ffmpeg.exe"
+
+    ydl_opts = {
+        'format': 'bestaudio/best',
+        'outtmpl': audio_path,
+        'ffmpeg_location': ffmpeg_path,
+        'postprocessors': [{
+            'key': 'FFmpegExtractAudio',
+            'preferredcodec': 'mp3',
+            'preferredquality': '192',
+        }],
+        'quiet': True,
+    }
+    print("Downloading audio...")
+
+    try:
+        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+            ydl.download([url])
+            print("Audio downloaded successfully.")
+    except Exception as e:
+        flash(f"Error downloading video: {e}")
+        return redirect(url_for('ask_youtube'))
+
+    # Transcribe using Whisper
+    try:
+        model = whisper.load_model("base")
+        print(f"Audio path exists: {os.path.exists(audio_path)} - {audio_path}")
+        result = model.transcribe(audio_path)
+        transcript = result["text"]
+        print("Transcription completed with whisper.")
+
+    except Exception as e:
+        flash(f"Error transcribing video: {e}")
+        return redirect(url_for('ask_youtube'))
+
+    # Save transcript in session and file
+    yt_texts[video_id] = transcript
+    session['video_id'] = video_id
+    print("Transcript saved in session.")
+
+    # Save transcript to PDF
+    transcript_path = Path("static/downloads")
+    transcript_path.mkdir(parents=True, exist_ok=True)
+
+    pdf_file = transcript_path / f"{video_id}.pdf"
+    pdf = FPDF()
+    pdf.add_page()
+    pdf.set_auto_page_break(auto=True, margin=15)
+    pdf.set_font("Arial", size=12)
+    for line in transcript.split('\n'):
+        pdf.multi_cell(0, 10, line)
+    pdf.output(str(pdf_file))
+
+    print("Transcription complete. Ask your questions!")
+    return render_template('youtube.html', video_added= True, yt_conversation = yt_conversation)
+
+
+@app.route('/ask_youtube', methods=['GET','POST'])
+def ask_youtube():
+    if 'is_logged_in' not in session:
+        flash('You need to login first', 'warning')
+        return redirect('/login')
+
+    if request.method == 'POST':
+        yt_question = request.form.get('yt_question')
+        video_id = session.get('video_id')
+        yt_content = yt_texts.get(video_id, "")
+
+        if not yt_content:
+            print("No transcript found. Please upload a video first.")
+            return redirect(url_for('ask_youtube'))
+
+        prompt = (
+            "Use the following YouTube video transcript to answer the question:\n\n"
+            f"{yt_content}\n\nyt_Question: {yt_question}"
+        )
+        yt_answer = ask_gemini(prompt)
+        yt_conversation.append({'yt_question': yt_question, 'yt_answer': yt_answer})
+
+        return render_template('youtube.html', video_added= ('video_id' in session), yt_conversation = yt_conversation)
+
+    # GET request will render a question form
+    return render_template('youtube.html', video_added= ('video_id' in session), yt_conversation = yt_conversation)
+
+#--------END CHAT WITH YOUTUBE implementation--------
 #--------LOGOUT IMPLEMENTATION--------
 @app.route('/logout')
 def logout():

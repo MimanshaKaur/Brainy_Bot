@@ -167,7 +167,7 @@ def process_youtube():
     session['youtube_video_id'] = video_id
 
     # Save transcript to PDF
-    transcript_path = Path("static/downloads")
+    transcript_path = Path("uploads")"
     transcript_path.mkdir(parents=True, exist_ok=True)
 
     pdf_file = transcript_path / f"{video_id}.pdf"
@@ -179,7 +179,7 @@ def process_youtube():
         pdf.multi_cell(0, 10, line)
     pdf.output(str(pdf_file))
 
-    flash("Transcription complete. Ask your questions!")
+    print("Transcription complete. Ask your questions!")
     return render_template('youtube.html', video_id=video_id)
 
 @app.route('/ask_youtube', methods=['POST'])

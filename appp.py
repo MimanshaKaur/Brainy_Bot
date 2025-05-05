@@ -76,7 +76,7 @@ conversation = [
 ]
 
 pdf_conversation = [
-    {'pdf_question': 'What is pdf question?', 'pdf_answer': 'pdf answer!'}
+    {'pdf_question': 'Ask anything from the PDF!', 'pdf_answer': 'And get your answers instantly!'}
 ]
 # In‑memory store of extracted PDF text
 pdf_texts = {}
@@ -209,7 +209,7 @@ def upload_pdf():
     file = request.files.get('pdf_file')
     if not file or not file.filename.lower().endswith('.pdf'):
         print("Please upload a valid PDF.")
-        return redirect(url_for('home'))
+        return redirect(url_for('ask_pdf'))
 
     # If there's already one loaded, remove its text entry
     old_uuid = session.get('pdf_uuid')

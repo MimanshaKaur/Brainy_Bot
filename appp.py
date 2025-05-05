@@ -26,7 +26,7 @@ class User(db.Model):
         return f'{self.username}({ self.u_id})'
 
 class pdf(db.Model):
-    pdf_id = db.Column(db.Integer, primary_key=True)
+    pdf_uuid = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey(User.u_id), nullable = False)
     filename = db.Column(db.String(120), nullable = False)
     processed_text = db.Column(db.Text, nullable = False)
@@ -74,6 +74,13 @@ to create the project database, open terminal
 conversation = [
     {'question': 'What is BrainyBot?', 'answer': 'Your Perfect Study Companion!'}
 ]
+
+pdf_conversation = [
+    {'pdf_question': 'What is pdf question?', 'pdf_answer': 'pdf answer!'}
+]
+# In‑memory store of extracted PDF text
+pdf_texts = {}
+
 @app.route('/')
 def home():
     pdf_loaded = ("pdf_uuid" in session)
@@ -169,27 +176,74 @@ def ask():
 #------------END NORMAL CHAT WITH BOT--------------
 
 #--------START CHAT WITH PDF implementation--------
+@app.route('/ask_pdf', methods=['GET','POST'])
 def ask_pdf():
-    question = request.form.get('question')
-    if not question:
-        flash("Please enter a question.")
+    if 'is_logged_in' not in session:
+        flash('You need to login first', 'warning')
+        return redirect('/login')
+    if request.method == 'POST':
+        pdf_question = request.form.get('pdf_question')
+        if not pdf_question:
+            print("Please enter a question.")
+            return redirect(url_for('ask_pdf'))
+        if 'pdf_uuid' in session:
+            # fetch the stored text; if missing, treat as no PDF
+            content = pdf_texts.get(session['pdf_uuid'], "")
+            prompt = (
+                "Use the following PDF content to answer the question:\n\n"
+                f"{content}\n\nQuestion: {pdf_question}"
+            )
+            pdf_answer = ask_gemini(prompt)
+            pdf_conversation.append({'pdf_question': pdf_question, 'pdf_answer': pdf_answer})
+            return render_template( 'pdf.html', pdf_loaded=('pdf_uuid' in session), pdf_conversation = pdf_conversation)
+        else:
+            flash("No PDF loaded. Please upload a PDF first.")
+            return redirect(url_for('ask_pdf'))
+    # GET request will render a question form
+    return render_template('pdf.html', pdf_loaded=('pdf_uuid' in session), pdf_conversation=pdf_conversation)
+
+# —— New: upload PDF ——
+@app.route('/upload_pdf', methods=['POST'])
+def upload_pdf():
+    global pdf_conversation
+    file = request.files.get('pdf_file')
+    if not file or not file.filename.lower().endswith('.pdf'):
+        print("Please upload a valid PDF.")
         return redirect(url_for('home'))
 
-    prompt = question
-    if 'pdf_uuid' in session:
-        # fetch the stored text; if missing, treat as no PDF
-        content = pdf_texts.get(session['pdf_uuid'], "")
-        prompt = (
-            "Use the following PDF content to answer the question:\n\n"
-            f"{content}\n\nQuestion: {question}"
-        )
+    # If there's already one loaded, remove its text entry
+    old_uuid = session.get('pdf_uuid')
+    if old_uuid and old_uuid in pdf_texts:
+        del pdf_texts[old_uuid]
 
-    answer = ask_gemini(prompt)
-    return render_template(
-        'home.html',
-        answer=answer,
-        pdf_loaded=('pdf_uuid' in session)
-    )
+    # Save new PDF
+    unique_id = str(uuid.uuid4())
+    filename = secure_filename(unique_id + '.pdf')
+    save_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+    file.save(save_path)
+
+    # Extract text
+    doc = fitz.open(save_path)
+    text = "\n".join(page.get_text() for page in doc)
+    doc.close()
+
+    # Store and mark session
+    pdf_texts[unique_id] = text
+    session['pdf_uuid'] = unique_id
+
+    print("PDF uploaded and indexed. You can now ask questions about it!")
+    return redirect(url_for('ask_pdf'))
+
+
+# —— Optional: clear PDF ——
+@app.route('/clear_pdf')
+def clear_pdf():
+    pdf_conversation.clear()
+    pdf_id = session.pop('pdf_uuid', None)
+    if pdf_id and pdf_id in pdf_texts:
+        del pdf_texts[pdf_id]
+    flash("PDF context cleared.")
+    return redirect(url_for('ask_pdf'))
 #--------END CHAT WITH PDF implementation--------
 
 #--------LOGOUT IMPLEMENTATION--------

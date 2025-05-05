@@ -63,7 +63,7 @@
         <!-- End Logo -->
       </div>
 
-      <div class="h-full overflow-y-auto [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:bg-gray-300 dark:[&::-webkit-scrollbar-track]:bg-neutral-700 dark:[&::-webkit-scrollbar-thumb]:bg-neutral-500">
+      <div class="h-full overflow-y-auto [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:bg-gray-300">
         <!-- List -->
         <ul class="space-y-1.5 p-4">
           {% if session.is_logged_in %}
@@ -86,7 +86,7 @@
             </a>
           </li>
           <li>
-            <a class="flex items-center gap-x-3 py-2 px-3 text-sm text-gray-100 border border-gray-800 rounded-lg hover:bg-gray-900 focus:outline-hidden focus:bg-gray-900" href="/">
+            <a class="flex items-center gap-x-3 py-2 px-3 text-sm text-gray-100 border border-gray-800 rounded-lg hover:bg-gray-900 focus:outline-hidden focus:bg-gray-900" href="/ask_pdf">
               <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-text-icon lucide-file-text"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg>
               CHAT WITH PDF
             </a>
@@ -216,17 +216,7 @@
   </div>
   <!-- End Content -->
   <!-- ========== END MAIN CONTENT ========== -->
-
-  <!-- JS Implementing Plugins -->
-
-  <!-- JS PLUGINS -->
   <!-- Required plugins -->
-  <script>
-    // Scroll to the bottom of the page after it loads
-    window.onload = function () {
-        window.scrollTo(0, document.body.scrollHeight);
-    };
-  </script>
   <script src="https://cdn.jsdelivr.net/npm/preline/dist/index.js"></script>
   <script src="https://preline.co/assets/vendor/prism/prism.js"></script>
 

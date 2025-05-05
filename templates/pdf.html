@@ -1,0 +1,257 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Required Meta Tags Always Come First -->
+    <meta charset="utf-8">
+    <meta name="robots" content="max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+    <link rel="canonical" href="https://preline.co/">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Sidebar Application AI Prompt using Tailwind CSS for Preline UI, a product of Htmlstream.">
+
+    <meta name="twitter:site" content="@preline">
+    <meta name="twitter:creator" content="@preline">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Sidebar Application AI Prompt using Tailwind CSS | Preline UI, crafted with Tailwind CSS">
+    <meta name="twitter:description" content="Sidebar Application AI Prompt using Tailwind CSS for Preline UI, a product of Htmlstream.">
+    <meta name="twitter:image" content="https://preline.co/assets/img/og-image.png">
+
+    <meta property="og:url" content="https://preline.co/">
+    <meta property="og:locale" content="en_US">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Preline">
+    <meta property="og:title" content="Sidebar Application AI Prompt using Tailwind CSS | Preline UI, crafted with Tailwind CSS">
+    <meta property="og:description" content="Sidebar Application AI Prompt using Tailwind CSS for Preline UI, a product of Htmlstream.">
+    <meta property="og:image" content="https://preline.co/assets/img/og-image.png">
+
+    <!-- Title -->
+    <title>PDF</title>
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="../../favicon.ico">
+
+    <!-- Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Theme Check and Update -->
+    <script>
+        const html = document.querySelector('html');
+        const isLightOrAuto = localStorage.getItem('hs_theme') === 'light' || (localStorage.getItem('hs_theme') === 'auto' && !window.matchMedia('(prefers-color-scheme: dark)').matches);
+        const isDarkOrAuto = localStorage.getItem('hs_theme') === 'dark' || (localStorage.getItem('hs_theme') === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+
+        if (isLightOrAuto && html.classList.contains('dark')) html.classList.remove('dark');
+        else if (isDarkOrAuto && html.classList.contains('light')) html.classList.remove('light');
+        else if (isDarkOrAuto && !html.classList.contains('dark')) html.classList.add('dark');
+        else if (isLightOrAuto && !html.classList.contains('light')) html.classList.add('light');
+    </script>
+
+    <!-- CSS Preline -->
+    <link rel="stylesheet" href="https://preline.co/assets/css/main.min.css">
+</head>
+
+<body class="leading-normal tracking-normal text-indigo-400 m-6 bg-cover bg-fixed" style="margin:0; backdrop-filter: brightness(0.7); background-image: url('/static/background.jpg');">
+    <!-- ========== MAIN CONTENT ========== -->
+    <!-- Sidebar -->
+    <div id="hs-application-sidebar" class="hs-overlay [--auto-close:lg] hs-overlay-open:translate-x-0 -translate-x-full duration-300 transform hidden fixed top-0 start-0 bottom-0 z-60 w-64 h-full bg-black border-e border-gray-900 lg:block lg:translate-x-0 lg:end-auto lg:bottom-0" role="dialog" tabindex="-1" aria-label="Sidebar">
+        <nav class="size-full flex flex-col">
+        <div class="my-5 flex items-center pt-4 pe-4 ps-7">
+            <!-- Logo -->
+            <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 22" fill="none" stroke="#3a0ca3" stroke-width="2.0" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-brain-icon lucide-brain"><path d="M12 5a3 3 0 1 0-5.997.125 4 4 0 0 0-2.526 5.77 4 4 0 0 0 .556 6.588A4 4 0 1 0 12 18Z"/><path d="M12 5a3 3 0 1 1 5.997.125 4 4 0 0 1 2.526 5.77 4 4 0 0 1-.556 6.588A4 4 0 1 1 12 18Z"/><path d="M15 13a4.5 4.5 0 0 1-3-4 4.5 4.5 0 0 1-3 4"/><path d="M17.599 6.5a3 3 0 0 0 .399-1.375"/><path d="M6.003 5.125A3 3 0 0 0 6.401 6.5"/><path d="M3.477 10.896a4 4 0 0 1 .585-.396"/><path d="M19.938 10.5a4 4 0 0 1 .585.396"/><path d="M6 18a4 4 0 0 1-1.967-.516"/><path d="M19.967 17.484A4 4 0 0 1 18 18"/></svg>
+            <div class="mx-2 text-2xl font-semibold bg-clip-text bg-linear-to-tl from-blue-600 to-violet-600 text-transparent">BRAINYBOT</div>
+            <!-- End Logo -->
+        </div>
+        <div class="h-full overflow-y-auto [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:bg-gray-300">
+            <!-- List -->
+            <ul class="space-y-1.5 p-4">
+            {% if session.is_logged_in %}
+            <li>
+                <a class="flex items-center gap-x-3 py-2 px-3 text-sm text-gray-100 border border-gray-800 rounded-lg hover:bg-gray-900 focus:outline-hidden focus:bg-gray-900" href="/">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-house-icon lucide-house"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+                DASHBOARD
+                </a>
+            </li>
+            <li>
+                <a class="flex items-center gap-x-3 py-2 px-3 text-sm text-gray-100 border border-gray-800 rounded-lg hover:bg-gray-900 focus:outline-hidden focus:bg-gray-900" href="/about">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-info-icon lucide-info"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+                ABOUT
+                </a>
+            </li>
+            <li>
+                <a class="flex items-center gap-x-3 py-2 px-3 text-sm text-gray-100 border border-gray-800 rounded-lg hover:bg-gray-900 focus:outline-hidden focus:bg-gray-900" href="/ask">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pencil-icon lucide-pencil"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg>
+                ASK ME ANYTHING
+                </a>
+            </li>
+            <li>
+                <a class="flex items-center gap-x-3 py-2 px-3 text-sm text-gray-100 rounded-lg bg-gray-900 focus:outline-hidden focus:bg-gray-900" href="/ask_pdf">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-text-icon lucide-file-text"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg>
+                CHAT WITH PDF
+                </a>
+            </li>
+            <li>
+                <a class="flex items-center gap-x-3 py-2 px-3 text-sm text-gray-100 border border-gray-800 rounded-lg hover:bg-gray-900 focus:outline-hidden focus:bg-gray-900" href="/">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-youtube-icon lucide-youtube"><path d="M2.5 17a24.12 24.12 0 0 1 0-10 2 2 0 0 1 1.4-1.4 49.56 49.56 0 0 1 16.2 0A2 2 0 0 1 21.5 7a24.12 24.12 0 0 1 0 10 2 2 0 0 1-1.4 1.4 49.55 49.55 0 0 1-16.2 0A2 2 0 0 1 2.5 17"/><path d="m10 15 5-3-5-3z"/></svg>
+                CHAT WITH YOUTUBE
+                </a>
+            </li>
+            <li>
+                <a class="flex items-center gap-x-3 py-2 px-3 text-sm text-gray-100 border border-gray-800 rounded-lg hover:bg-gray-900 focus:outline-hidden focus:bg-gray-900" href="/">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-scroll-text-icon lucide-scroll-text"><path d="M15 12h-5"/><path d="M15 8h-5"/><path d="M19 17V5a2 2 0 0 0-2-2H4"/><path d="M8 21h12a2 2 0 0 0 2-2v-1a1 1 0 0 0-1-1H11a1 1 0 0 0-1 1v1a2 2 0 1 1-4 0V5a2 2 0 1 0-4 0v2a1 1 0 0 0 1 1h3"/></svg>
+                NOTES SUMMARIZER
+                </a>
+            </li>
+            <li>
+                <a class="flex items-center gap-x-3 py-2 px-3 text-sm text-gray-100 border border-gray-800 rounded-lg hover:bg-gray-900 focus:outline-hidden focus:bg-gray-900" href="/">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-check-big-icon lucide-circle-check-big"><path d="M21.801 10A10 10 0 1 1 17 3.335"/><path d="m9 11 3 3L22 4"/></svg>
+                REVISION CORNER
+                </a>
+            </li>
+            {% else %}
+            <li>
+                <a class="flex items-center gap-x-3 py-2 px-3 text-sm text-gray-100 border border-gray-800 rounded-lg hover:bg-gray-900 focus:outline-hidden focus:bg-gray-900" href="/">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-house-icon lucide-house"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+                HOME
+                </a>
+            </li>
+            <li>
+                <a class="flex items-center gap-x-3 py-2 px-3 text-sm text-gray-100 rounded-lg bg-gray-900 focus:outline-hidden focus:bg-gray-900" href="/about">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-info-icon lucide-info"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+                ABOUT
+                </a>
+            </li>
+            {% endif %}
+            <!-- End List -->
+        </div>
+        <!-- Footer -->
+            <div class="p-4 border-t border-gray-700">
+            {% if session.is_logged_in %}
+            <a class="flex justify-between items-center gap-x-3 py-2 px-3 text-sm font-semibold text-gray-100 bg-gray-900 rounded-lg border border-transparent hover:border-white focus:bg-neutral-800"  href="/logout">
+                LOGOUT
+                <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
+                <polyline points="10 17 15 12 10 7" />
+                <line x1="15" x2="3" y1="12" y2="12" />
+                </svg>
+            </a>
+            {% else %}
+            <a class="flex justify-between items-center gap-x-3 py-2 px-3 text-sm font-semibold text-gray-100 bg-gray-900 rounded-lg border border-transparent hover:border-white focus:bg-neutral-800"  href="/register">
+                GET STARTED
+                <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
+                <polyline points="10 17 15 12 10 7" />
+                <line x1="15" x2="3" y1="12" y2="12" />
+                </svg>
+            </a>
+            {% endif %}
+            </div>
+        </div>
+        <!-- End Footer -->
+        </nav>
+    </div>
+    <!-- End Sidebar -->
+    <!-- Content area -->
+    <div class=" h-screen w-full lg:ps-65 overflow-y-auto">
+        <div class="py-10 lg:py-14">
+        <!-- Title -->
+        <div class="max-w-4xl px-4 sm:px-6 lg:px-8 mx-auto text-center">
+            <span class="text-5xl font-semibold bg-clip-text bg-linear-to-tl from-blue-600 to-violet-600 text-transparent"> BRAINYBOT</span>
+            <div class="text-center">
+                <p class="text-2xl font-semibold text-yellow-400 tracking-wide uppercase mt-5 mb-3">
+                    Upload. Convert. Create.
+                </p>
+                <h1 class="text-3xl text-white font-bold sm:text-5xl lg:text-2xl lg:leading-tight">
+                    Upload Your PDF and ask me anything about it.
+                </h1>
+            </div>
+        </div>
+        <!-- End Title -->
+        <!-- Hero -->
+        <div class="overflow-hidden">
+            <div class="max-w-[85rem] mx-auto px-4 sm:px-6 lg:px-8 py-10">
+                <div class="relative mx-auto max-w-4xl grid space-y-5 sm:space-y-10">
+                    <!-- Form -->
+                    <form action="{{ url_for('upload_pdf') }}" method="post" enctype="multipart/form-data">
+                        <div class="mx-auto max-w-lg sm:flex sm:space-x-2 p-3 bg-white border rounded-lg">
+                            <div class="pt-2 sm:pt-0 sm:ps-3 border-t border-gray-200 sm:border-t-0 sm:border-s w-full">
+                                <label for="hs-hero-email-1" class="block text-sm font-medium"><span
+                                        class="sr-only">PDF File</span></label>
+                                <input type="file" id="hs-hero-email-1" name="pdf_file" class="py-3 px-4 block w-95 border-transparent rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500"
+                                    placeholder="Select your PDF File" accept=".pdf" required>
+                            </div>
+                            <div class="whitespace-nowrap pt-2 sm:pt-0 grid sm:block">
+                                <button type="submit" class="py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none">
+                                    Upload PDF
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                    <!-- End Form -->
+                </div>
+                {% if pdf_loaded %}
+                    <!--to clear pdf -->
+                    <form action="{{ url_for('clear_pdf') }}">
+                        <button type="submit" class="px-8 inline-flex justify-center items-center gap-x-2 text-md font-medium rounded-lg border border-transparent bg-red-600 text-white hover:bg-red-700 focus:outline-none focus:bg-red-700 disabled:opacity-50 disabled:pointer-events-none">
+                            Delete
+                        </button>
+                    </form>
+                    {% endif %}
+            </div>
+        </div>
+        <!-- End Hero -->
+        {% if pdf_loaded %}
+        <!--Details section-->
+        <ul class=" mt-16 space-y-6">
+            <!-- Chat Bubble -->
+            {% for item in pdf_conversation %}
+            <li style="margin-right: 20%;" class="max-w-2xl flex  mx-auto gap-x-2 sm:gap-x-4">
+            <div class="grow text-end space-y-2">
+                <div class="inline-block bg-blue-600 rounded-lg p-3 shadow-2xs">
+                    <p class="text-md text-white">
+                    {{ item['pdf_question'] }}
+                    </p>
+                </div>
+            </div>
+            <span class="shrink-0 inline-flex items-center justify-center size-9.5 rounded-full bg-blue-600">
+                <span class="text-sm font-medium text-white">MK</span>
+            </span>
+            </li>
+            <!-- AI Response Bubble -->
+            <li style="margin-left: 15%;" class="max-w-3xl text-justify py-2 px-4 sm:px-6 lg:px-8 mx-auto flex gap-x-2 sm:gap-x-4">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 -3 24 30" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="bg-gray-900 shrink-0 size-9.5 rounded-full lucide lucide-brain-icon lucide-brain"><path d="M12 5a3 3 0 1 0-5.997.125 4 4 0 0 0-2.526 5.77 4 4 0 0 0 .556 6.588A4 4 0 1 0 12 18Z"/><path d="M12 5a3 3 0 1 1 5.997.125 4 4 0 0 1 2.526 5.77 4 4 0 0 1-.556 6.588A4 4 0 1 1 12 18Z"/><path d="M15 13a4.5 4.5 0 0 1-3-4 4.5 4.5 0 0 1-3 4"/></svg>
+            <div class="inline-block text-md text-white bg-gray-900 rounded-lg p-3 shadow-2xs">
+                <p>{{ item['pdf_answer'] }}</p>
+            </div>
+            </li>
+            {% endfor %}
+            <!-- End Chat Bubble -->
+        </ul>
+        </div>
+        
+        {% endif %}
+        <!--Textarea-->
+        <div class="max-w-4xl mx-auto sticky bottom-0 z-10 p-3 sm:py-12">
+        <!-- Input -->
+        <div style="margin-top: -5%;" class="relative mt-12">
+            <form method="post" action="{{ url_for('ask_pdf') }}">
+            <input style="position: absolute;" class="p-3 sm:p-4 pb-12 sm:pb-12 block h-30 w-full bg-black border-gray-900 rounded-lg sm:text-sm text-gray-100 focus:border-blue-500 focus:ring-blue-500" type="text" name="pdf_question" placeholder="Ask Me Anything from PDF ..." required>
+            <!-- Send Button -->
+            <button type="submit" style="position:relative; margin-left: 95%; margin-top: 5%;" class="inline-flex shrink-0 justify-center items-center size-8 rounded-lg text-white bg-blue-600 hover:bg-blue-500 focus:z-10 focus:outline-hidden focus:bg-blue-500">
+                <svg class="shrink-0 size-3.5" xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.002.26.41a.5.5 0 0 0 .886-.083l6-15Zm-1.833 1.89L6.637 10.07l-.215-.338a.5.5 0 0 0-.154-.154l-.338-.215 7.494-7.494 1.178-.471-.47 1.178Z" />
+                </svg>
+            </button>
+            <!-- End Send Button -->
+            </form>
+        </div>
+        <!-- End Input -->
+        </div>
+    <!-- End Textarea -->
+    </div>
+    <!-- End Content -->
+    <!-- ========== END MAIN CONTENT ========== -->
+    <!-- Required plugins -->
+    <script src="https://cdn.jsdelivr.net/npm/preline/dist/index.js"></script>
+    <script src="https://preline.co/assets/vendor/prism/prism.js"></script>
+
+    </body>
+</html>

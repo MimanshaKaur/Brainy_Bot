@@ -154,7 +154,7 @@
         <div class="py-10 lg:py-14">
             {% if notes_loaded %}
             <div style="margin-left:70%;" class="absolute top-6 right-4 z-50">
-                <form action="{{ url_for('clear_pdf') }}">
+                <form action="{{ url_for('clear_notes') }}">
                     <button type="submit"
                         class="px-8 py-1 inline-flex justify-center items-center gap-x-2 text-md font-medium rounded-lg border border-transparent bg-red-600 text-white hover:bg-red-700 focus:outline-none focus:bg-red-700 disabled:opacity-50 disabled:pointer-events-none">
                         Delete PDF
@@ -201,15 +201,25 @@
             </div>
             <!-- End Hero -->
             {% if notes_loaded %}
+            <div style="margin-left:42%; margin-top:-2%;" class=" right-4 z-50">
+                <form action="{{ url_for('get_notes') }}">
+                    <button type="submit"
+                        class="px-8 py-1 inline-flex justify-center items-center gap-x-2 text-md font-medium rounded-lg border border-transparent bg-green-600 text-white hover:bg-green-700 focus:outline-none focus:bg-green-700 disabled:opacity-50 disabled:pointer-events-none">
+                        SUMMARIZE NOW
+                    </button>
+                </form>
+            </div>
+            {% endif %}
+            {% if notes_loaded %}
             <!--Details section-->
             <ul class=" mt-16 space-y-6">
                 <!-- Chat Bubble -->
-                {% for item in pdf_conversation %}
+                {% for item in notes_conversation %}
                 <li style="margin-right: 20%;" class="max-w-2xl flex  mx-auto gap-x-2 sm:gap-x-4">
                 <div class="grow text-end space-y-2">
                     <div class="inline-block bg-blue-600 rounded-lg p-3 shadow-2xs">
                         <p class="text-md text-white">
-                        {{ item['pdf_question'] }}
+                        {{ item['notes_question'] }}
                         </p>
                     </div>
                 </div>
@@ -221,7 +231,7 @@
                 <li style="margin-left: 15%;" class="max-w-3xl text-justify py-2 px-4 sm:px-6 lg:px-8 mx-auto flex gap-x-2 sm:gap-x-4">
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 -3 24 30" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="bg-gray-900 shrink-0 size-9.5 rounded-full lucide lucide-brain-icon lucide-brain"><path d="M12 5a3 3 0 1 0-5.997.125 4 4 0 0 0-2.526 5.77 4 4 0 0 0 .556 6.588A4 4 0 1 0 12 18Z"/><path d="M12 5a3 3 0 1 1 5.997.125 4 4 0 0 1 2.526 5.77 4 4 0 0 1-.556 6.588A4 4 0 1 1 12 18Z"/><path d="M15 13a4.5 4.5 0 0 1-3-4 4.5 4.5 0 0 1-3 4"/></svg>
                 <div class="inline-block text-md text-white bg-gray-900 rounded-lg p-3 shadow-2xs">
-                    <p>{{ item['pdf_answer'] }}</p>
+                    <p>{{ item['notes_answer'] }}</p>
                 </div>
                 </li>
                 {% endfor %}
@@ -235,7 +245,7 @@
             <!-- Input -->
             <div style="margin-top: -5%;" class="relative mt-12">
                 <form method="post" action="{{ url_for('ask_pdf') }}">
-                <input style="position: absolute;" class="p-3 sm:p-4 pb-12 sm:pb-12 block h-30 w-full bg-black border-gray-900 rounded-lg sm:text-sm text-gray-100 focus:border-blue-500 focus:ring-blue-500" type="text" name="pdf_question" placeholder="Ask Me Anything from PDF ..." required>
+                <input style="position: absolute;" class="p-3 sm:p-4 pb-12 sm:pb-12 block h-30 w-full bg-black border-gray-900 rounded-lg sm:text-sm text-gray-100 focus:border-blue-500 focus:ring-blue-500" type="text" name="notes_question" placeholder="Ask Me Anything from PDF ..." required>
                 <!-- Send Button -->
                 <button type="submit" style="position:relative; margin-left: 95%; margin-top: 5%;" class="inline-flex shrink-0 justify-center items-center size-8 rounded-lg text-white bg-blue-600 hover:bg-blue-500 focus:z-10 focus:outline-hidden focus:bg-blue-500">
                     <svg class="shrink-0 size-3.5" xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
@@ -252,7 +262,7 @@
             <!-- Input -->
             <div style="margin-top: -5%;" class="relative mt-12">
                 <form class="disabled" method="post" action="{{ url_for('ask_pdf') }}">
-                <input style="position: absolute;" class="p-3 sm:p-4 pb-12 sm:pb-12 block h-30 w-full bg-black border-gray-900 rounded-lg sm:text-sm text-gray-100 focus:border-blue-500 focus:ring-blue-500" type="text" name="pdf_question" placeholder="First Upload the PDF ..." required>
+                <input style="position: absolute;" class="p-3 sm:p-4 pb-12 sm:pb-12 block h-30 w-full bg-black border-gray-900 rounded-lg sm:text-sm text-gray-100 focus:border-blue-500 focus:ring-blue-500" type="text" name="notes_question" placeholder="First Upload the PDF ..." required>
                 <!-- Send Button -->
                 <button type="submit" style="position:relative; margin-left: 95%; margin-top: 5%;" class="inline-flex shrink-0 justify-center items-center size-8 rounded-lg text-white bg-blue-600 hover:bg-blue-500 focus:z-10 focus:outline-hidden focus:bg-blue-500">
                     <svg class="shrink-0 size-3.5" xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">

@@ -103,6 +103,10 @@ yt_conversation = [
     {'yt_question': 'Ask anything from the YouTube video!', 'yt_answer': 'And get your answers instantly!'}
 ]
 
+notes_conversation = [
+    {'notes_question': 'Ask anything from the notes!', 'notes_answer': 'And get your answers instantly!'}
+]
+
 # In‑memory store of extracted PDF text
 pdf_texts = {}
 yt_texts = {}
@@ -444,12 +448,41 @@ def upload_notes():
     print("PDF uploaded and indexed. You can now ask questions about it!")
     return redirect(url_for('get_notes'))
 
-
 @app.route('/get_notes', methods=['GET','POST'])
 def get_notes():
-    print("GETTING NOTES")
-    return render_template('notes.html', notes_loaded=('notes_id' in session))
-# ---------END NOTES SUMMARIZER IMPLEMENTATION--------
+    print("Notes page loaded")
+    if 'is_logged_in' not in session:
+        flash('You need to login first', 'warning')
+        return redirect('/login')
+    if request.method == 'POST':
+        notes_question = "Please Summarize this text"
+
+        if 'notes_id' in session:
+            # fetch the stored text; if missing, treat as no PDF
+            notes_content = notes_texts.get(session['notes_id'], "")
+            prompt = (
+                "Use the following PDF content and summarize it:\n\n"
+                f"{notes_content}\n\nQuestion: {notes_question}"
+            )
+            notes_answer = ask_gemini(prompt)
+            pdf_conversation.append({'notes_question': notes_question, 'notes_answer': notes_answer})
+            return render_template( 'notes.html', notes_loaded=('notes_id' in session), notes_conversation = notes_conversation)
+        else:
+            print("No PDF  for notes loaded. Please upload a PDF first.")
+            return redirect(url_for('get_notes'))
+    # GET request will render a question form
+    return render_template( 'notes.html', notes_loaded=('notes_id' in session), notes_conversation = notes_conversation)
+
+# —— clear notesPDF ——
+@app.route('/clear_notes')
+def clear_notes():
+    notes_conversation.clear()
+    notes_id = session.pop('notes_id', None)
+    if notes_id and notes_id in pdf_texts:
+        del notes_texts[notes_id]
+    flash("PDF notes context cleared.")
+    return redirect(url_for('get_notes'))
+
 #--------LOGOUT IMPLEMENTATION--------
 @app.route('/logout')
 def logout():

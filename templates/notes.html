@@ -83,7 +83,7 @@
                 </a>
             </li>
             <li>
-                <a class="flex items-center gap-x-3 py-2 px-3 text-sm text-gray-100 rounded-lg bg-gray-900 focus:outline-hidden focus:bg-gray-900" href="/ask_pdf">
+                <a class="flex items-center gap-x-3 py-2 px-3 text-sm text-gray-100 border border-gray-800 rounded-lg hover:bg-gray-900 focus:outline-hidden focus:bg-gray-900" href="/ask_pdf">
                 <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-text-icon lucide-file-text"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg>
                 CHAT WITH PDF
                 </a>
@@ -95,7 +95,7 @@
                 </a>
             </li>
             <li>
-                <a class="flex items-center gap-x-3 py-2 px-3 text-sm text-gray-100 border border-gray-800 rounded-lg hover:bg-gray-900 focus:outline-hidden focus:bg-gray-900" href="/get_notes">
+                <a class="flex items-center gap-x-3 py-2 px-3 text-sm text-gray-100 rounded-lg bg-gray-900 focus:outline-hidden focus:bg-gray-900" href="/get_notes">
                 <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-scroll-text-icon lucide-scroll-text"><path d="M15 12h-5"/><path d="M15 8h-5"/><path d="M19 17V5a2 2 0 0 0-2-2H4"/><path d="M8 21h12a2 2 0 0 0 2-2v-1a1 1 0 0 0-1-1H11a1 1 0 0 0-1 1v1a2 2 0 1 1-4 0V5a2 2 0 1 0-4 0v2a1 1 0 0 0 1 1h3"/></svg>
                 NOTES SUMMARIZER
                 </a>
@@ -152,7 +152,7 @@
     <!-- Content area -->
     <div class=" h-screen w-full lg:ps-65 overflow-y-auto">
         <div class="py-10 lg:py-14">
-            {% if pdf_loaded %}
+            {% if notes_loaded %}
             <div style="margin-left:70%;" class="absolute top-6 right-4 z-50">
                 <form action="{{ url_for('clear_pdf') }}">
                     <button type="submit"
@@ -180,12 +180,12 @@
                 <div class="max-w-[85rem] mx-auto px-4 sm:px-6 lg:px-8 py-10">
                     <div class="relative mx-auto max-w-4xl grid space-y-5 sm:space-y-10">
                         <!-- Form -->
-                        <form action="{{ url_for('upload_pdf') }}" method="post" enctype="multipart/form-data">
+                        <form action="{{ url_for('upload_notes') }}" method="post" enctype="multipart/form-data">
                             <div class="mx-auto max-w-lg sm:flex sm:space-x-2 p-3 bg-white border rounded-lg">
                                 <div class="pt-2 sm:pt-0 sm:ps-3 border-t border-gray-200 sm:border-t-0 sm:border-s w-full">
                                     <label for="hs-hero-email-1" class="block text-sm font-medium"><span
                                             class="sr-only">PDF File</span></label>
-                                    <input type="file" id="hs-hero-email-1" name="pdf_file" class="py-3 px-4 block w-95 border-transparent rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500"
+                                    <input type="file" id="hs-hero-email-1" name="notes_file" class="py-3 px-4 block w-95 border-transparent rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500"
                                         placeholder="Select your PDF File" accept=".pdf" required>
                                 </div>
                                 <div class="whitespace-nowrap pt-2 sm:pt-0 grid sm:block">
@@ -200,7 +200,7 @@
                 </div>
             </div>
             <!-- End Hero -->
-            {% if pdf_loaded %}
+            {% if notes_loaded %}
             <!--Details section-->
             <ul class=" mt-16 space-y-6">
                 <!-- Chat Bubble -->
@@ -230,7 +230,7 @@
             {% endif %}
         </div>
         <!--Textarea-->
-        {% if pdf_loaded %}
+        {% if notes_loaded %}
         <div class="max-w-4xl mx-auto sticky bottom-0 z-10 p-3 sm:py-12">
             <!-- Input -->
             <div style="margin-top: -5%;" class="relative mt-12">

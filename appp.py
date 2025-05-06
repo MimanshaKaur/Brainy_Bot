@@ -46,6 +46,13 @@ class Youtube(db.Model):
     def __str__(self):
         return f'{self.filename}({self.video_id})'
 
+class Notes(db.Model):
+    notes_id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey(User.u_id), nullable = False)
+
+    def __str__(self):
+        return f'{self.filename}({self.notes_id})'
+
 
 #--END of Database Logic--
 # --FLASK APP logic--
@@ -99,6 +106,7 @@ yt_conversation = [
 # In‑memory store of extracted PDF text
 pdf_texts = {}
 yt_texts = {}
+notes_texts = {}
 
 @app.route('/')
 def home():
@@ -403,6 +411,45 @@ def clear_video():
     return redirect(url_for('ask_youtube'))
 
 #--------END CHAT WITH YOUTUBE implementation--------
+
+#--------START NOTES SUMMARIZER IMPLEMENTATION--------
+@app.route('/upload_notes', methods=['POST'])
+def upload_notes():
+    notes_file = request.files.get('notes_file')
+    if not notes_file or not notes_file.filename.lower().endswith('.pdf'):
+        print("Please upload a valid PDF.")
+        return redirect(url_for('get_notes'))
+
+    # If there's already one loaded, remove its text entry
+    old_notes_id = session.get('notes_id')
+    if old_notes_id and old_notes_id in notes_texts:
+        del notes_texts[old_notes_id]
+
+    # Save new PDF
+    unique_id = str(uuid.uuid4())
+    filename = secure_filename(unique_id + '.pdf')
+    save_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+    notes_file.save(save_path)
+
+    # Extract text
+    doc = fitz.open(save_path)
+    text = "\n".join(page.get_text() for page in doc)
+    doc.close()
+    print("Text extracted from PDF for notes.")
+
+    # Store and mark session
+    notes_texts[unique_id] = text
+    session['notes_id'] = unique_id
+
+    print("PDF uploaded and indexed. You can now ask questions about it!")
+    return redirect(url_for('get_notes'))
+
+
+@app.route('/get_notes', methods=['GET','POST'])
+def get_notes():
+    print("GETTING NOTES")
+    return render_template('notes.html', notes_loaded=('notes_id' in session))
+# ---------END NOTES SUMMARIZER IMPLEMENTATION--------
 #--------LOGOUT IMPLEMENTATION--------
 @app.route('/logout')
 def logout():

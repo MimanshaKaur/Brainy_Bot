@@ -206,6 +206,21 @@ def ask():
 
 #------------END NORMAL CHAT WITH BOT--------------
 
+class CustomPDF(FPDF):
+    def header(self):
+
+        # Add the app title
+        self.ln(12)
+        self.set_font("Arial", style="B", size=20)
+        self.cell(0, 10, "BrainyBot: Summarized Notes", align="C", ln=True)
+        self.ln(10)
+
+    def footer(self):
+        # Add the footer with page number
+        self.set_y(-15)
+        self.set_font("Arial", size=12)
+        self.cell(0, 10, f"Page {self.page_no()}", align="C")
+
 #--------START CHAT WITH PDF implementation--------
 @app.route('/ask_pdf', methods=['GET','POST'])
 def ask_pdf():
@@ -346,10 +361,19 @@ def process_youtube():
     print("Transcript path created.")
 
     pdf_file = transcript_path / f"{video_id}.pdf"
-    pdf = FPDF()
-    pdf.add_page()
+    pdf = CustomPDF()
     pdf.set_auto_page_break(auto=True, margin=15)
-    pdf.set_font("Arial", size=12)
+
+    def draw_black_margin():
+        pdf.set_draw_color(0, 0, 0)  # Black color
+        pdf.set_line_width(1)       # Line thickness
+        pdf.rect(5, 5, 200, 287)    # Rectangle (x, y, width, height)
+
+    # Add the starting page
+    pdf.add_page()
+    draw_black_margin()
+    pdf.set_font("Arial", size=14)
+
     for line in transcript.split('\n'):
         pdf.multi_cell(0, 10, line)
     pdf.output(str(pdf_file))
@@ -472,22 +496,6 @@ def get_notes():
             return redirect(url_for('get_notes'))
     # GET request will render a question form
     return render_template( 'notes.html', notes_loaded=('notes_id' in session))
-
-class CustomPDF(FPDF):
-    def header(self):
-
-        # Add the app title
-        self.ln(12)
-        self.set_font("Arial", style="B", size=20)
-        self.cell(0, 10, "BrainyBot: Summarized Notes", align="C", ln=True)
-        self.ln(10)
-
-    def footer(self):
-        # Add the footer with page number
-        self.set_y(-15)
-        self.set_font("Arial", size=12)
-        self.cell(0, 10, f"Page {self.page_no()}", align="C")
-
 
 @app.route('/download_pdf', methods=['POST'])
 def download_pdf():

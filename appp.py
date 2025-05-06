@@ -1,13 +1,14 @@
 import os
 import uuid
 import fitz
-from flask import Flask, render_template, request, redirect,url_for, session, flash
+from flask import Flask, render_template, request, redirect,url_for, session, flash, send_file
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.utils import secure_filename
 from chatbot import ask_gemini
 import whisper
 import yt_dlp
 from fpdf import FPDF
+from io import BytesIO
 from pathlib import Path
 from dotenv import load_dotenv
 load_dotenv()
@@ -103,14 +104,12 @@ yt_conversation = [
     {'yt_question': 'Ask anything from the YouTube video!', 'yt_answer': 'And get your answers instantly!'}
 ]
 
-notes_conversation = [
-    {'notes_question': 'Ask anything from the notes!', 'notes_answer': 'And get your answers instantly!'}
-]
 
 # In‑memory store of extracted PDF text
 pdf_texts = {}
 yt_texts = {}
 notes_texts = {}
+notes_answer = ""
 
 @app.route('/')
 def home():
@@ -456,6 +455,7 @@ def get_notes():
         return redirect('/login')
     if request.method == 'POST':
         notes_question = "Please Summarize this text"
+        print("Notes question:")
 
         if 'notes_id' in session:
             # fetch the stored text; if missing, treat as no PDF
@@ -465,18 +465,68 @@ def get_notes():
                 f"{notes_content}\n\nQuestion: {notes_question}"
             )
             notes_answer = ask_gemini(prompt)
-            pdf_conversation.append({'notes_question': notes_question, 'notes_answer': notes_answer})
-            return render_template( 'notes.html', notes_loaded=('notes_id' in session), notes_conversation = notes_conversation)
+            print('Notes question answered.')
+            return render_template( 'notes.html', notes_loaded=('notes_id' in session), notes_answer=notes_answer)
         else:
             print("No PDF  for notes loaded. Please upload a PDF first.")
             return redirect(url_for('get_notes'))
     # GET request will render a question form
-    return render_template( 'notes.html', notes_loaded=('notes_id' in session), notes_conversation = notes_conversation)
+    return render_template( 'notes.html', notes_loaded=('notes_id' in session))
+
+class CustomPDF(FPDF):
+    def header(self):
+
+        # Add the app title
+        self.ln(12)
+        self.set_font("Arial", style="B", size=20)
+        self.cell(0, 10, "BrainyBot: Summarized Notes", align="C", ln=True)
+        self.ln(10)
+
+    def footer(self):
+        # Add the footer with page number
+        self.set_y(-15)
+        self.set_font("Arial", size=12)
+        self.cell(0, 10, f"Page {self.page_no()}", align="C")
+
+
+@app.route('/download_pdf', methods=['POST'])
+def download_pdf():
+    notes_id = session.get('notes_id')
+    notes = request.form.get('notes_answer', '')
+
+    pdf = CustomPDF()
+    pdf.set_auto_page_break(auto=True, margin=15)
+
+    def draw_black_margin():
+        pdf.set_draw_color(0, 0, 0)  # Black color
+        pdf.set_line_width(1)       # Line thickness
+        pdf.rect(5, 5, 200, 287)    # Rectangle (x, y, width, height)
+
+    # Add the starting page
+    pdf.add_page()
+    draw_black_margin()
+    pdf.set_font("Arial", style="B", size=14)
+
+    # Split the text into lines so it wraps properly
+    lines = notes.split('\n')
+    for line in lines:
+        pdf.multi_cell(0, 10, line)
+
+    # Output PDF to memory
+    pdf_buffer = BytesIO()
+    pdf.output(pdf_buffer)
+    pdf_buffer.seek(0)
+
+    return send_file(
+        pdf_buffer,
+        as_attachment=True,
+        download_name=f"{notes_id}.pdf",
+        mimetype='application/pdf'
+    )
 
 # —— clear notesPDF ——
 @app.route('/clear_notes')
 def clear_notes():
-    notes_conversation.clear()
     notes_id = session.pop('notes_id', None)
     if notes_id and notes_id in pdf_texts:
         del notes_texts[notes_id]

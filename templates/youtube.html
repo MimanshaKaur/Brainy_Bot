@@ -152,16 +152,6 @@
     <!-- Content area -->
     <div class=" h-screen w-full lg:ps-65 overflow-y-auto">
         <div class="py-10 lg:py-14">
-            {% if video_id %}
-            <div style="margin-left:70%;" class="absolute top-6 right-4 z-50">
-                <form action="{{ url_for('clear_video') }}">
-                    <button type="submit"
-                        class="px-8 py-1 inline-flex justify-center items-center gap-x-2 text-md font-medium rounded-lg border border-transparent bg-red-600 text-white hover:bg-red-700 focus:outline-none focus:bg-red-700 disabled:opacity-50 disabled:pointer-events-none">
-                        Delete Video
-                    </button>
-                </form>
-            </div>
-            {% endif %}
             <!-- Title -->
             <div class="max-w-4xl px-4 sm:px-6 lg:px-8 mx-auto text-center">
                 <span class="text-5xl font-semibold bg-clip-text bg-linear-to-tl from-blue-600 to-violet-600 text-transparent"> BRAINYBOT</span>
@@ -170,7 +160,7 @@
                         Upload video | Ask Questions | Get Answers
                     </p>
                     <h1 class="text-3xl text-white font-bold sm:text-5xl lg:text-2xl lg:leading-tight">
-                        Upload Your link and ask me anything about it.
+                        Upload The link and ask me anything about its Content.
                     </h1>
                 </div>
             </div>
@@ -178,8 +168,7 @@
             <!--Hero -->
             <div class="overflow-hidden">
                 <div class="max-w-[85rem] mx-auto px-4 sm:px-6 lg:px-8 py-10">
-                    <div class="relative mx-auto max-w-4xl grid grid-cols-2 space-y-5 sm:space-y-10">
-                        <div class = "col-start-1 col-end-2">
+                    <div class="relative mx-auto max-w-4xl grid space-y-5 sm:space-y-10">
                             <!-- Form -->
                             <form action="{{ url_for('process_youtube') }}" method="post" enctype="multipart/form-data">
                                 <div class="mx-auto max-w-md sm:flex sm:space-x-2 p-3 bg-white border rounded-lg">
@@ -197,11 +186,26 @@
                                 </div>
                             </form>
                             <!-- End Form -->
-                        </div>
-                        <div class="col-start-2 col-end-2">
+                        <div class="grid grid-rows-2">
                             {% if video_id %}
-                            <h3>Video Preview:</h3>
-                            <iframe width="560" height="315" src="https://www.youtube.com/embed/{{ video_id }}" frameborder="0" allowfullscreen></iframe>
+                            <div class="row-strat-1 row-end-2">
+                                <div style="margin-left: 77%;" class="absolute top-0 right-4 z-50">
+                                    <form action="{{ url_for('clear_video') }}">
+                                        <button type="submit" class="px-8 py-1 inline-flex justify-center items-center gap-x-2 text-md font-medium rounded-lg border border-transparent bg-red-600 text-white hover:bg-red-700 focus:outline-none focus:bg-red-700 disabled:opacity-50 disabled:pointer-events-none">
+                                            Delete Video
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="row-start-2 row-end-3">
+                                <div style="margin-left:78%; margin-top: -8%;" class="absolute z-50 ">
+                                    <form action="{{ url_for('download_transcript') }}">
+                                        <button class="px-8 py-1 inline-flex justify-center items-center gap-x-2 text-md font-medium rounded-lg border border-transparent bg-green-600 text-white hover:bg-green-700 focus:outline-none focus:bg-green-700 disabled:opacity-50 disabled:pointer-events-none" type="submit">
+                                            Download
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
                             {% endif %}
                         </div>
                     </div>
@@ -236,9 +240,7 @@
             </ul>
         </div>
         {% if video_id %}
-        <form action="{{ url_for('download_transcript') }}">
-            <button class="text-white" type="submit">Download Transcript as PDF</button>
-        </form>
+        
         <!--Textarea-->
         <div class="max-w-4xl mx-auto sticky bottom-0 z-10 p-3 sm:py-12">
             <!-- Input -->

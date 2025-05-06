@@ -109,7 +109,7 @@ def clear_pdf():
 
 @app.route('/youtube')
 def youtube():
-    return render_template('youtube.html')
+    return render_template('yt.html')
 
 @app.route('/process_youtube', methods=['POST'])
 def process_youtube():
@@ -182,7 +182,7 @@ def process_youtube():
     pdf.output(str(pdf_file))
 
     flash("Transcription complete. Ask your questions!")
-    return render_template('youtube.html', video_id=video_id)
+    return render_template('yt.html', video_id=video_id)
 
 @app.route('/ask_youtube', methods=['POST'])
 def ask_youtube():
@@ -202,7 +202,7 @@ def ask_youtube():
     answer = ask_gemini(prompt)
 
     return render_template(
-        'youtube.html',
+        'yt.html',
         video_id=video_id,
         answer=answer
     )

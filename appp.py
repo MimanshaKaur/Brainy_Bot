@@ -12,6 +12,9 @@ from pathlib import Path
 from dotenv import load_dotenv
 load_dotenv()
 
+# Force whisper/ffmpeg to use the right binary
+os.environ["PATH"] += os.pathsep + r"C:/Users/Mimansha/OneDrive/Documents/GitHub/practice/ffmpeg-7.1.1-essentials_build/ffmpeg-7.1.1-essentials_build/bin"
+
 #--Database Logic--
 
 db = SQLAlchemy()
@@ -100,8 +103,8 @@ yt_texts = {}
 @app.route('/')
 def home():
     pdf_loaded = ("pdf_uuid" in session)
-    video_added = ("video_id" in session)
-    return render_template('home.html', pdf_loaded=pdf_loaded, video_added=video_added)
+    video_id= ("video_id" in session)
+    return render_template('home.html', pdf_loaded=pdf_loaded, video_id=video_id)
 
 @app.route('/about')
 def about():
@@ -264,7 +267,6 @@ def clear_pdf():
 #--------END CHAT WITH PDF implementation--------
 
 #--------START CHAT WITH YOUTUBE implementation--------
-
 @app.route('/process_youtube', methods=['POST'])
 def process_youtube():
     url = request.form.get('youtube_url')
@@ -276,7 +278,7 @@ def process_youtube():
     import re
     match = re.search(r"(?:v=|youtu\.be/)([A-Za-z0-9_-]{11})", url)
     if not match:
-        flash("Invalid YouTube URL.")
+        print("Invalid YouTube URL.")
         return redirect(url_for('ask_youtube'))
 
     video_id = match.group(1)
@@ -299,13 +301,16 @@ def process_youtube():
     try:
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             ydl.download([url])
+            print("Video downloaded successfully.")
     except Exception as e:
-        flash(f"Error downloading video: {e}")
+        print(f"Error downloading video: {e}")
         return redirect(url_for('ask_youtube'))
 
     audio_path = base_filename + ".mp3"
+    print("Audio path:", audio_path)
+
     if not os.path.exists(audio_path):
-        flash("Audio file was not created. Something went wrong with yt_dlp or FFmpeg.")
+        print("Audio file was not created. Something went wrong with yt_dlp or FFmpeg.")
         return redirect(url_for('ask_youtube'))
 
     # Transcribe
@@ -313,18 +318,21 @@ def process_youtube():
         model = whisper.load_model("base")
         result = model.transcribe(audio_path)
         transcript = result["text"]
+        print("Transcription complete.")
     except Exception as e:
-        flash(f"Error transcribing video: {e}")
+        print(f"Error transcribing video: {e}")
         return redirect(url_for('ask_youtube'))
 
 
     # Save transcript in session and file
     session['youtube_transcript'] = transcript
-    session['youtube_video_id'] = video_id
+    session['video_id'] = video_id
+    print("Transcript saved in session.")
 
     # Save transcript to PDF
     transcript_path = Path("static/downloads")
     transcript_path.mkdir(parents=True, exist_ok=True)
+    print("Transcript path created.")
 
     pdf_file = transcript_path / f"{video_id}.pdf"
     pdf = FPDF()
@@ -335,9 +343,8 @@ def process_youtube():
         pdf.multi_cell(0, 10, line)
     pdf.output(str(pdf_file))
 
-    flash("Transcription complete. Ask your questions!")
-    return render_template('youtube.html', video_id=video_id)
-
+    print("Transcription complete. Ask your questions!")
+    return redirect(url_for('ask_youtube'))
 
 @app.route('/ask_youtube', methods=['GET','POST'])
 def ask_youtube():
@@ -348,27 +355,33 @@ def ask_youtube():
     if request.method == 'POST':
         yt_question = request.form.get('yt_question')
         yt_content = session.get('youtube_transcript')
-        video_id = session.get('youtube_video_id')
+        video_id = session.get('video_id')
 
-        if not yt_content and not video_id:
+        if not yt_content:
             print("No transcript found. Please upload a video first.")
+            return redirect(url_for('ask_youtube'))
+
+        if not video_id:
+            print("No video ID found. Please upload a video first.")
             return redirect(url_for('ask_youtube'))
 
         prompt = (
             "Use the following YouTube video transcript to answer the question:\n\n"
-            f"{yt_content}\n\nyt_question: {yt_question}"
+            f"{yt_content}\n\nQuestion: {yt_question}"
         )
         yt_answer = ask_gemini(prompt)
         yt_conversation.append({'yt_question': yt_question, 'yt_answer': yt_answer})
+        print("YouTube question answered.")
+        print('video_id:', video_id)
 
-        return render_template('youtube.html', video_added= ('video_id' in session), yt_conversation = yt_conversation)
+        return render_template('youtube.html', video_id= ('video_id' in session), yt_conversation = yt_conversation)
 
     # GET request will render a question form
-    return render_template('youtube.html', video_added= ('video_id' in session), yt_conversation = yt_conversation)
+    return render_template('youtube.html', video_id= ('video_id' in session), yt_conversation = yt_conversation)
 
 @app.route('/download_transcript')
 def download_transcript():
-    video_id = session.get('youtube_video_id')
+    video_id = session.get('video_id')
     if not video_id:
         flash("No transcript to download.")
         return redirect(url_for('ask_youtube'))
@@ -380,6 +393,13 @@ def download_transcript():
 
     return redirect(f"/{path}")
 
+@app.route('/clear_video')
+def clear_video():
+    session.pop('video_id', None)
+    session.pop('youtube_transcript', None)
+    session.pop('yt_conversation', None)
+    print("YouTube video context cleared.")
+    return redirect(url_for('ask_youtube'))
 
 #--------END CHAT WITH YOUTUBE implementation--------
 #--------LOGOUT IMPLEMENTATION--------

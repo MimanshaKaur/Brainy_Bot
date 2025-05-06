@@ -397,7 +397,8 @@ def download_transcript():
 def clear_video():
     session.pop('video_id', None)
     session.pop('youtube_transcript', None)
-    session.pop('yt_conversation', None)
+    global yt_conversation
+    yt_conversation.clear()
     print("YouTube video context cleared.")
     return redirect(url_for('ask_youtube'))
 

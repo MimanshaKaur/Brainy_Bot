@@ -505,7 +505,7 @@ def download_pdf():
     # Add the starting page
     pdf.add_page()
     draw_black_margin()
-    pdf.set_font("Arial", style="B", size=14)
+    pdf.set_font("Arial", size=14)
 
     # Split the text into lines so it wraps properly
     lines = notes.split('\n')

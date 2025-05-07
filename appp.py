@@ -541,6 +541,15 @@ def clear_notes():
     flash("PDF notes context cleared.")
     return redirect(url_for('get_notes'))
 
+#--------END NOTES SUMMARIZER IMPLEMENTATION--------
+#--------START REVISION IMPLEMENTATION--------
+@app.route('/revision', methods=['GET','POST'])
+def revision():
+    if 'is_logged_in' not in session:
+        flash('You need to login first', 'warning')
+        return redirect('/login')
+    return render_template('revision.html')
+
 #--------LOGOUT IMPLEMENTATION--------
 @app.route('/logout')
 def logout():

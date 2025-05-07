@@ -54,6 +54,12 @@ class Notes(db.Model):
     def __str__(self):
         return f'{self.filename}({self.notes_id})'
 
+class mcqs(db.Model):
+    mcq_id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey(User.u_id), nullable = False)
+
+    def __str__(self):
+        return f'{self.filename}({self.mcq_id})'
 
 #--END of Database Logic--
 # --FLASK APP logic--
@@ -109,7 +115,9 @@ yt_conversation = [
 pdf_texts = {}
 yt_texts = {}
 notes_texts = {}
+mcq_notes_texts ={}
 notes_answer = ""
+mcq_answer = ""
 
 @app.route('/')
 def home():
@@ -212,7 +220,7 @@ class CustomPDF(FPDF):
         # Add the app title
         self.ln(12)
         self.set_font("Arial", style="B", size=20)
-        self.cell(0, 10, "BrainyBot: Summarized Notes", align="C", ln=True)
+        self.cell(0, 10, "BrainyBot: AI Smart Study Assistant", align="C", ln=True)
         self.ln(10)
 
     def footer(self):
@@ -220,6 +228,18 @@ class CustomPDF(FPDF):
         self.set_y(-15)
         self.set_font("Arial", size=12)
         self.cell(0, 10, f"Page {self.page_no()}", align="C")
+
+def wrap_text_line(text, max_length=80):
+    words = text.split()
+    wrapped_lines = []
+
+    for word in words:
+        while len(word) > max_length:
+            wrapped_lines.append(word[:max_length])
+            word = word[max_length:]
+        wrapped_lines.append(word)
+
+    return " ".join(wrapped_lines)
 
 #--------START CHAT WITH PDF implementation--------
 @app.route('/ask_pdf', methods=['GET','POST'])
@@ -542,6 +562,7 @@ def clear_notes():
     return redirect(url_for('get_notes'))
 
 #--------END NOTES SUMMARIZER IMPLEMENTATION--------
+
 #--------START REVISION IMPLEMENTATION--------
 @app.route('/revision', methods=['GET','POST'])
 def revision():
@@ -556,6 +577,108 @@ def mcq_generator():
         flash('You need to login first', 'warning')
         return redirect('/login')
     return render_template('mcq.html')
+
+@app.route('/upload_mcq_notes', methods=['POST'])
+def upload_mcq_notes():
+    mcq_notes_file = request.files.get('mcq_notes_file')
+    if not mcq_notes_file or not mcq_notes_file.filename.lower().endswith('.pdf'):
+        print("Please upload a valid mcq PDF.")
+        return redirect(url_for('get_mcq'))
+
+    # If there's already one loaded, remove its text entry
+    old_mcq_notes_id = session.get('mcq_id')
+    if old_mcq_notes_id and old_mcq_notes_id in notes_texts:
+        del mcq_notes_texts[old_mcq_notes_id]
+
+    # Save new PDF
+    unique_id = str(uuid.uuid4())
+    filename = secure_filename(unique_id + '.pdf')
+    save_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+    mcq_notes_file.save(save_path)
+
+    # Extract text
+    doc = fitz.open(save_path)
+    text = "\n".join(page.get_text() for page in doc)
+    doc.close()
+    print("Text extracted from mcq PDF for mcqs.")
+
+    # Store and mark session
+    mcq_notes_texts[unique_id] = text
+    session['mcq_notes_id'] = unique_id
+
+    print("PDF uploaded and indexed. You can now generate mcqs!")
+    return redirect(url_for('get_mcq'))
+
+@app.route('/get_mcq', methods=['GET','POST'])
+def get_mcq():
+    print("mcq Notes page loaded")
+    if 'is_logged_in' not in session:
+        flash('You need to login first', 'warning')
+        return redirect('/login')
+    if request.method == 'POST':
+        mcq_notes_question = "Please generate 2 MCQs each with its correct answer from this text"
+        print("mcq-Notes question:")
+
+        if 'mcq_notes_id' in session:
+            # fetch the stored text; if missing, treat as no PDF
+            mcq_notes_content = mcq_notes_texts.get(session['mcq_notes_id'], "")
+            prompt = (
+                "Use the following PDF content and generate 2 MCQs from it each with its correct answer:\n\n"
+                f"{mcq_notes_content}\n\nQuestion: {mcq_notes_question}"
+            )
+            mcq_notes_answer = ask_gemini(prompt)
+            print('mcq created.')
+            return render_template( 'mcq.html', mcq_loaded=('mcq_notes_id' in session), mcq_notes_answer=mcq_notes_answer)
+        else:
+            print("No PDF  for mcqs loaded. Please upload a PDF first.")
+            return redirect(url_for('get_mcq'))
+    # GET request will render a question form
+    return render_template( 'mcq.html', mcq_loaded=('mcq_notes_id' in session))
+
+# —— clear MCQ PDF ——
+@app.route('/clear_mcq')
+def clear_mcq():
+    mcq_notes_id = session.pop('mcq_notes_id', None)
+    if mcq_notes_id and mcq_notes_id in mcq_notes_texts:
+        del mcq_notes_texts[mcq_notes_id]
+    flash("MCQ PDF cleared.")
+    return redirect(url_for('get_mcq'))
+
+@app.route('/download_mcq', methods=['POST'])
+def download_mcq():
+    print('in download mcqs function')
+    mcq_notes_id = session.get('mcq_notes_id','')
+    mcq_notes = request.form.get('mcq_notes_answer', '')
+
+    pdf = CustomPDF()
+    pdf.set_auto_page_break(auto=True, margin=15)
+
+    def draw_black_margin():
+        pdf.set_draw_color(0, 0, 0)  # Black color
+        pdf.set_line_width(1)       # Line thickness
+        pdf.rect(5, 5, 200, 287)    # Rectangle (x, y, width, height)
+
+    pdf.add_page()
+    draw_black_margin()
+    pdf.set_font("Arial", size=14)
+
+    lines = mcq_notes.split('\n')
+    for line in lines:
+        safe_line = wrap_text_line(line, max_length=80)
+        pdf.multi_cell(0, 10, safe_line)
+
+    # Output PDF to memory
+    pdf_buffer = BytesIO()
+    pdf.output(pdf_buffer)
+    pdf_buffer.seek(0)
+
+    return send_file(
+        pdf_buffer,
+        as_attachment=True,
+        download_name=f"{mcq_notes_id}.pdf",
+        mimetype='application/pdf'
+    )
+
 
 @app.route('/flashcard_generator', methods = ['GET','POST'])
 def flashcard_generator():

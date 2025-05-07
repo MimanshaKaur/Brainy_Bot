@@ -550,6 +550,20 @@ def revision():
         return redirect('/login')
     return render_template('revision.html')
 
+@app.route('/mcq_generator', methods = ['GET','POST'])
+def mcq_generator():
+    if 'is_logged_in' not in session:
+        flash('You need to login first', 'warning')
+        return redirect('/login')
+    return render_template('mcq.html')
+
+@app.route('/flashcard_generator', methods = ['GET','POST'])
+def flashcard_generator():
+    if 'is_logged_in' not in session:
+        flash('You need to login first', 'warning')
+        return redirect('/login')
+    return render_template('flashcard.html')
+
 #--------LOGOUT IMPLEMENTATION--------
 @app.route('/logout')
 def logout():

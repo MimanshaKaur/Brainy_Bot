@@ -61,6 +61,13 @@ class mcqs(db.Model):
     def __str__(self):
         return f'{self.filename}({self.mcq_id})'
 
+class flashcard(db.Model):
+    flash_id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey(User.u_id), nullable = False)
+
+    def __str__(self):
+        return f'{self.filename}({self.flash_id})'
+
 #--END of Database Logic--
 # --FLASK APP logic--
 def create_app():
@@ -116,8 +123,10 @@ pdf_texts = {}
 yt_texts = {}
 notes_texts = {}
 mcq_notes_texts ={}
+flash_notes_texts ={}
 notes_answer = ""
 mcq_answer = ""
+flash_answer = ""
 
 @app.route('/')
 def home():
@@ -588,7 +597,7 @@ def upload_mcq_notes():
 
     # If there's already one loaded, remove its text entry
     old_mcq_notes_id = session.get('mcq_id')
-    if old_mcq_notes_id and old_mcq_notes_id in notes_texts:
+    if old_mcq_notes_id and old_mcq_notes_id in mcq_notes_texts:
         del mcq_notes_texts[old_mcq_notes_id]
 
     # Save new PDF
@@ -680,12 +689,117 @@ def download_mcq():
         mimetype='application/pdf'
     )
 
+# --------------generating flashcards-----------------------
+
 @app.route('/flashcard_generator', methods = ['GET','POST'])
 def flashcard_generator():
     if 'is_logged_in' not in session:
         flash('You need to login first', 'warning')
         return redirect('/login')
     return render_template('flashcard.html')
+
+@app.route('/upload_flash_notes', methods=['POST'])
+def upload_flash_notes():
+    flash_notes_file = request.files.get('flash_notes_file')
+    if not flash_notes_file or not flash_notes_file.filename.lower().endswith('.pdf'):
+        print("Please upload a valid flashcard PDF.")
+        return redirect(url_for('get_flash'))
+
+    # If there's already one loaded, remove its text entry
+    old_flash_notes_id = session.get('flash_id')
+    if old_flash_notes_id and old_flash_notes_id in flash_notes_texts:
+        del flash_notes_texts[old_flash_notes_id]
+
+    # Save new PDF
+    unique_id = str(uuid.uuid4())
+    filename = secure_filename(unique_id + '.pdf')
+    save_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+    flash_notes_file.save(save_path)
+
+    # Extract text
+    doc = fitz.open(save_path)
+    text = "\n".join(page.get_text() for page in doc)
+    doc.close()
+    print("Text extracted from flashcard PDF for mcqs.")
+
+    # Store and mark session
+    flash_notes_texts[unique_id] = text
+    session['flash_notes_id'] = unique_id
+
+    print("PDF uploaded and indexed. You can now generate flashcards!")
+    return redirect(url_for('get_flash'))
+
+
+@app.route('/get_flash', methods=['GET','POST'])
+def get_flash():
+    print("flashcard Notes loaded")
+    if 'is_logged_in' not in session:
+        flash('You need to login first', 'warning')
+        return redirect('/login')
+    if request.method == 'POST':
+        flash_notes_question = "Please generate flashcards from this text only and NO EXTRA explanation needed."
+        print("flashcard question:")
+
+        if 'flash_notes_id' in session:
+            # fetch the stored text; if missing, treat as no PDF
+            flash_notes_content = flash_notes_texts.get(session['flash_notes_id'], "")
+            prompt = (
+                "Use the following PDF content and generate Flashcards only. NO EXTRA explanation needed.:\n\n"
+                f"{flash_notes_content}\n\nQuestion: {flash_notes_question}"
+            )
+            flash_notes_answer = ask_gemini(prompt)
+            print('flashcards created.')
+            return render_template( 'flashcard.html', flash_loaded=('flash_notes_id' in session), flash_notes_answer=flash_notes_answer)
+        else:
+            print("No PDF  for mcqs loaded. Please upload a PDF first.")
+            return redirect(url_for('get_flash'))
+    # GET request will render a question form
+    return render_template( 'flashcard.html', flash_loaded=('flash_notes_id' in session))
+
+@app.route('/download_flash', methods=['POST'])
+def download_flash():
+    print('in download flashcard function')
+    flash_notes_id = session.get('flash_notes_id', '')
+    flash_notes = request.form.get('flash_notes_answer', '')
+
+    pdf = CustomPDF()
+    pdf.set_auto_page_break(auto=True, margin=15)
+
+    pdf.add_page()
+    pdf.set_font("Arial", size=14)
+
+    lines = flash_notes.split('\n')
+    for line in lines:
+        if not line.strip():
+            pdf.ln(5)
+            continue
+
+        wrapped = wrap_text_line(line, max_length=100)  # 100 works well with 180mm width
+        for part in wrapped:
+            pdf.multi_cell(w=180, h=10, txt=part, align='L')
+        pdf.ln(3)  # Space after each MCQ section
+
+    # Output PDF to memory
+    pdf_buffer = BytesIO()
+    pdf.output(pdf_buffer)
+    pdf_buffer.seek(0)
+
+    return send_file(
+        pdf_buffer,
+        as_attachment=True,
+        download_name=f"{flash_notes_id or 'flash_output'}.pdf",
+        mimetype='application/pdf'
+    )
+
+
+# —— clear flashcard PDF ——
+@app.route('/clear_flash')
+def clear_flash():
+    flash_notes_id = session.pop('flash_notes_id', None)
+    if flash_notes_id and flash_notes_id in flash_notes_texts:
+        del flash_notes_texts[flash_notes_id]
+    flash("flashcard PDF cleared.")
+    return redirect(url_for('get_flash'))
 
 #--------LOGOUT IMPLEMENTATION--------
 @app.route('/logout')

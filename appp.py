@@ -229,17 +229,18 @@ class CustomPDF(FPDF):
         self.set_font("Arial", size=12)
         self.cell(0, 10, f"Page {self.page_no()}", align="C")
 
-def wrap_text_line(text, max_length=80):
-    words = text.split()
-    wrapped_lines = []
+    def draw_black_margin(self):
+        self.set_draw_color(0, 0, 0)
+        self.set_line_width(1)
+        self.rect(5, 5, 200, 287)
 
-    for word in words:
-        while len(word) > max_length:
-            wrapped_lines.append(word[:max_length])
-            word = word[max_length:]
-        wrapped_lines.append(word)
+    def add_page(self, orientation='', format='', same=False):
+        super().add_page(orientation, format, same)
+        self.draw_black_margin()
 
-    return " ".join(wrapped_lines)
+def wrap_text_line(text, max_length=100):
+    import textwrap
+    return textwrap.wrap(text, width=max_length)
 
 #--------START CHAT WITH PDF implementation--------
 @app.route('/ask_pdf', methods=['GET','POST'])
@@ -616,14 +617,14 @@ def get_mcq():
         flash('You need to login first', 'warning')
         return redirect('/login')
     if request.method == 'POST':
-        mcq_notes_question = "Please generate 2 MCQs each with its correct answer from this text"
+        mcq_notes_question = "Please generate 10 MCQs each with 4 options in separate lines from this PDF Content. Also show its correct answer only without explanation. just show mcqs with options and correct answer no extra text."
         print("mcq-Notes question:")
 
         if 'mcq_notes_id' in session:
             # fetch the stored text; if missing, treat as no PDF
             mcq_notes_content = mcq_notes_texts.get(session['mcq_notes_id'], "")
             prompt = (
-                "Use the following PDF content and generate 2 MCQs from it each with its correct answer:\n\n"
+                "Use the following PDF content and generate 10 MCQs with 4 options of each in separate line. Also show correct answer of each MCQ without explanation and no extra text, just show the mcqs with options and correct answer:\n\n"
                 f"{mcq_notes_content}\n\nQuestion: {mcq_notes_question}"
             )
             mcq_notes_answer = ask_gemini(prompt)
@@ -647,25 +648,25 @@ def clear_mcq():
 @app.route('/download_mcq', methods=['POST'])
 def download_mcq():
     print('in download mcqs function')
-    mcq_notes_id = session.get('mcq_notes_id','')
+    mcq_notes_id = session.get('mcq_notes_id', '')
     mcq_notes = request.form.get('mcq_notes_answer', '')
 
     pdf = CustomPDF()
     pdf.set_auto_page_break(auto=True, margin=15)
 
-    def draw_black_margin():
-        pdf.set_draw_color(0, 0, 0)  # Black color
-        pdf.set_line_width(1)       # Line thickness
-        pdf.rect(5, 5, 200, 287)    # Rectangle (x, y, width, height)
-
     pdf.add_page()
-    draw_black_margin()
     pdf.set_font("Arial", size=14)
 
     lines = mcq_notes.split('\n')
     for line in lines:
-        safe_line = wrap_text_line(line, max_length=80)
-        pdf.multi_cell(0, 10, safe_line)
+        if not line.strip():
+            pdf.ln(5)
+            continue
+
+        wrapped = wrap_text_line(line, max_length=100)  # 100 works well with 180mm width
+        for part in wrapped:
+            pdf.multi_cell(w=180, h=10, txt=part, align='L')
+        pdf.ln(3)  # Space after each MCQ section
 
     # Output PDF to memory
     pdf_buffer = BytesIO()
@@ -675,10 +676,9 @@ def download_mcq():
     return send_file(
         pdf_buffer,
         as_attachment=True,
-        download_name=f"{mcq_notes_id}.pdf",
+        download_name=f"{mcq_notes_id or 'mcq_output'}.pdf",
         mimetype='application/pdf'
     )
-
 
 @app.route('/flashcard_generator', methods = ['GET','POST'])
 def flashcard_generator():

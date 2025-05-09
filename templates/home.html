@@ -34,10 +34,59 @@
 
   <!-- CSS Preline -->
   <link rel="stylesheet" href="https://preline.co/assets/css/main.min.css">
+  <style>
+    .zigzag-line {
+        position: relative;
+        top: -100px;
+        left: 20%;
+        width: 3px;
+        height: 3px;
+        background-color: #a57aff;
+        box-shadow: 0 0 10px #a57aff, 0 0 20px #a57aff;
+        animation: zigzagMove 4s linear infinite;
+    }
+
+    .zigzag-line.delay1 {
+        left: 50%;
+        animation-delay: 2s;
+    }
+
+    .zigzag-line.delay2 {
+        left: 80%;
+        animation-delay: 4s;
+    }
+
+    @keyframes zigzagMove {
+        0% {
+        transform: translate(0, 0);
+        opacity: 1;
+        }
+        20% {
+        transform: translate(50px, 100px);
+        }
+        40% {
+        transform: translate(-50px, 200px);
+        }
+        60% {
+        transform: translate(50px, 300px);
+        }
+        80% {
+        transform: translate(-50px, 400px);
+        }
+        100% {
+            transform: translate(0, 500px);
+            opacity: 0;
+            }
+        }
+    </style>
 </head>
-<!--leading-normal tracking-normal text-indigo-400 m-6 bg-cover bg-fixed" style="margin:0; background-image: url('https://img.freepik.com/free-photo/abstract-luxury-gradient-blue-background-smooth-dark-blue-with-black-vignette-studio-banner_1258-108775.jpg?t=st=1745573854~exp=1745577454~hmac=d292c454878f4255d66124b5ccad95ea4f4525efbfda1b70a29a88dbbf622f6f&w=1380');-->
 <body class="leading-normal tracking-normal text-indigo-400 m-6 bg-cover bg-fixed" style="margin: 0; padding: 0; height: 100vh; overflow: hidden; overflow-x:hidden; backdrop-filter: brightness(0.7); background-image: url('/static/background.jpg');">
-  <!-- ========== MAIN CONTENT ========== -->
+    <!--BG STYLING -->
+    <div class="zigzag-line"></div>
+    <div class="zigzag-line delay1"></div>
+    <div class="zigzag-line delay2"></div>
+    <!--END BG STYLING-->
+    <!-- ========== MAIN CONTENT ========== -->
   <!-- Sidebar -->
   <div id="hs-application-sidebar" class="hs-overlay [--auto-close:lg] hs-overlay-open:translate-x-0 -translate-x-full duration-300 transform hidden fixed top-0 start-0 bottom-0 z-60 w-64 h-full
   bg-black border-e border-gray-900

@@ -13,14 +13,64 @@
     <link href="https://unpkg.com/@tailwindcss/custom-forms/dist/custom-forms.min.css" rel="stylesheet" />
 
     <style>
-      @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap");
+        @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap");
 
-      html {
-        font-family: "Poppins", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-      }
+        html {
+            font-family: "Poppins", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+        }
+
+    .zigzag-line {
+        position: relative;
+        top: -100px;
+        left: 20%;
+        width: 3px;
+        height: 3px;
+        background-color: #a57aff;
+        box-shadow: 0 0 10px #a57aff, 0 0 20px #a57aff;
+        animation: zigzagMove 4s linear infinite;
+    }
+
+    .zigzag-line.delay1 {
+        left: 50%;
+        animation-delay: 2s;
+    }
+
+    .zigzag-line.delay2 {
+        left: 80%;
+        animation-delay: 4s;
+    }
+
+    @keyframes zigzagMove {
+        0% {
+        transform: translate(0, 0);
+        opacity: 1;
+        }
+        20% {
+        transform: translate(50px, 100px);
+        }
+        40% {
+        transform: translate(-50px, 200px);
+        }
+        60% {
+        transform: translate(50px, 300px);
+        }
+        80% {
+        transform: translate(-50px, 400px);
+        }
+        100% {
+            transform: translate(0, 500px);
+            opacity: 0;
+            }
+        }
     </style>
 </head>
-<body class="leading-normal tracking-normal text-indigo-400 bg-cover bg-fixed" style="margin:0; backdrop-filter: brightness(0.7); background-image: url('/static/background.jpg');">
+<body class="leading-normal tracking-normal text-indigo-400 m-6 bg-cover bg-fixed" style="margin: 0; padding: 0; height: 100vh; overflow: hidden; overflow-x:hidden; backdrop-filter: brightness(0.7); background-image: url('/static/background.jpg');">
+        <!--BG STYLING -->
+        <div class="zigzag-line"></div>
+        <div class="zigzag-line delay1"></div>
+        <div class="zigzag-line delay2"></div>
+        <!--END BG STYLING-->
+        <!-- ========== MAIN CONTENT ========== -->
     <div style="margin-left: 6%;" class="h-85 max-w-[85rem] sm:px-6 lg:px-8 mx-auto">
         <!--LOGO-->
         <div style="margin-left: -5%; padding-top: 3%;" class="flex items-center pt-4 pe-4 ps-7">

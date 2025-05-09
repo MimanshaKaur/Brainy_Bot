@@ -47,9 +47,58 @@
 
     <!-- CSS Preline -->
     <link rel="stylesheet" href="https://preline.co/assets/css/main.min.css">
-</head>
+    <style>
+    .zigzag-line {
+        position: relative;
+        top: -100px;
+        left: 20%;
+        width: 3px;
+        height: 3px;
+        background-color: #a57aff;
+        box-shadow: 0 0 10px #a57aff, 0 0 20px #a57aff;
+        animation: zigzagMove 4s linear infinite;
+    }
 
-<body class="leading-normal tracking-normal text-indigo-400 m-6 bg-cover bg-fixed" style="margin:0; backdrop-filter: brightness(0.7); background-image: url('/static/background.jpg');">
+    .zigzag-line.delay1 {
+        left: 50%;
+        animation-delay: 2s;
+    }
+
+    .zigzag-line.delay2 {
+        left: 80%;
+        animation-delay: 4s;
+    }
+
+    @keyframes zigzagMove {
+        0% {
+        transform: translate(0, 0);
+        opacity: 1;
+        }
+        20% {
+        transform: translate(50px, 100px);
+        }
+        40% {
+        transform: translate(-50px, 200px);
+        }
+        60% {
+        transform: translate(50px, 300px);
+        }
+        80% {
+        transform: translate(-50px, 400px);
+        }
+        100% {
+            transform: translate(0, 500px);
+            opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body class="leading-normal tracking-normal text-indigo-400 m-6 bg-cover bg-fixed" style="margin: 0; padding: 0; height: 100vh; overflow: hidden; overflow-x:hidden; backdrop-filter: brightness(0.7); background-image: url('/static/background.jpg');">
+    <!--BG STYLING -->
+    <div class="zigzag-line"></div>
+    <div class="zigzag-line delay1"></div>
+    <div class="zigzag-line delay2"></div>
+    <!--END BG STYLING-->
     <!-- ========== MAIN CONTENT ========== -->
     <!-- Sidebar -->
     <div id="hs-application-sidebar" class="hs-overlay [--auto-close:lg] hs-overlay-open:translate-x-0 -translate-x-full duration-300 transform hidden fixed top-0 start-0 bottom-0 z-60 w-64 h-full bg-black border-e border-gray-900 lg:block lg:translate-x-0 lg:end-auto lg:bottom-0" role="dialog" tabindex="-1" aria-label="Sidebar">
@@ -182,10 +231,10 @@
                 <span class="text-5xl font-semibold bg-clip-text bg-linear-to-tl from-blue-600 to-violet-600 text-transparent"> BRAINYBOT</span>
                 <div class="text-center">
                     <p class="text-2xl font-semibold text-yellow-400 tracking-wide uppercase mt-5 mb-3">
-                        RECHARGE YOUR REVISION
+                        | RECHARGE YOUR REVISION |
                     </p>
                     <h1 class="text-3xl text-white font-bold sm:text-4xl lg:text-xl lg:leading-tight">
-                        Drop your PDF and walk away with ready-made MCQs and flashcards in seconds.
+                        Drop your PDF and walk away with ready-made MCQs and Flashcards in seconds.
                     </h1>
                 </div>
             </div>
@@ -203,7 +252,7 @@
                                     </div>
                                     <li>
                                         <div class="flex mt-7 items-justify">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 22 18" fill="none" stroke="#3a0ca3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-step-forward-icon lucide-step-forward"><line x1="6" x2="6" y1="4" y2="20"/><polygon points="10,4 20,12 10,20"/></svg>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 22 18" fill="none" stroke="#3a0ca3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-step-forward-icon lucide-step-forward"><line x1="6" x2="6" y1="4" y2="20"/><polygon points="10,4 20,12 10,20"/></svg>
                                             <span class="mx-1 text-md font-semibold bg-clip-text bg-linear-to-tl from-blue-600 to-violet-600 text-transparent">
                                                 STEP-1: <span class="mx-1 text-ms text-gray-300">Upload Your Notes/PDF.</span>
                                             </span>
@@ -242,7 +291,7 @@
                                     </div>
                                     <li>
                                         <div class="flex mt-7 items-justify">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 22 18" fill="none" stroke="#3a0ca3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-step-forward-icon lucide-step-forward"><line x1="6" x2="6" y1="4" y2="20"/><polygon points="10,4 20,12 10,20"/></svg>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15  " viewBox="0 0 22 18" fill="none" stroke="#3a0ca3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-step-forward-icon lucide-step-forward"><line x1="6" x2="6" y1="4" y2="20"/><polygon points="10,4 20,12 10,20"/></svg>
                                             <span class="mx-1 text-md font-semibold bg-clip-text bg-linear-to-tl from-blue-600 to-violet-600 text-transparent">
                                                 STEP-1: <span class="mx-1 text-ms text-gray-300">Upload Your Notes/PDF.</span>
                                             </span>

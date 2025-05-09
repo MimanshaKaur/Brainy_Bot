@@ -117,7 +117,6 @@ yt_conversation = [
     {'yt_question': 'Ask anything from the YouTube video!', 'yt_answer': 'And get your answers instantly!'}
 ]
 
-
 # In‑memory store of extracted PDF text
 pdf_texts = {}
 yt_texts = {}
@@ -225,7 +224,6 @@ def ask():
 
 class CustomPDF(FPDF):
     def header(self):
-
         # Add the app title
         self.ln(12)
         self.set_font("Arial", style="B", size=20)
@@ -320,8 +318,8 @@ def clear_pdf():
         del pdf_texts[pdf_id]
     flash("PDF context cleared.")
     return redirect(url_for('ask_pdf'))
-#--------END CHAT WITH PDF implementation--------
 
+#--------END CHAT WITH PDF implementation--------
 #--------START CHAT WITH YOUTUBE implementation--------
 @app.route('/process_youtube', methods=['POST'])
 def process_youtube():
@@ -468,7 +466,6 @@ def clear_video():
     return redirect(url_for('ask_youtube'))
 
 #--------END CHAT WITH YOUTUBE implementation--------
-
 #--------START NOTES SUMMARIZER IMPLEMENTATION--------
 @app.route('/upload_notes', methods=['POST'])
 def upload_notes():
@@ -572,8 +569,7 @@ def clear_notes():
     return redirect(url_for('get_notes'))
 
 #--------END NOTES SUMMARIZER IMPLEMENTATION--------
-
-#--------START REVISION IMPLEMENTATION--------
+#-----------START REVISION IMPLEMENTATION-----------
 @app.route('/revision', methods=['GET','POST'])
 def revision():
     if 'is_logged_in' not in session:
@@ -581,6 +577,7 @@ def revision():
         return redirect('/login')
     return render_template('revision.html')
 
+#--------START GENERATING MCQs----------------------
 @app.route('/mcq_generator', methods = ['GET','POST'])
 def mcq_generator():
     if 'is_logged_in' not in session:
@@ -654,6 +651,7 @@ def clear_mcq():
     flash("MCQ PDF cleared.")
     return redirect(url_for('get_mcq'))
 
+# —— download MCQ PDF ——
 @app.route('/download_mcq', methods=['POST'])
 def download_mcq():
     print('in download mcqs function')
@@ -689,7 +687,8 @@ def download_mcq():
         mimetype='application/pdf'
     )
 
-# --------------generating flashcards-----------------------
+#--------------------END GENERATING MCQS-------------------------
+# --------------START GENERATING FLASHCARDS-----------------------
 
 @app.route('/flashcard_generator', methods = ['GET','POST'])
 def flashcard_generator():

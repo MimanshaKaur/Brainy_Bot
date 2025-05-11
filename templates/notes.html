@@ -216,10 +216,10 @@
                 <span class="text-5xl font-semibold bg-clip-text bg-linear-to-tl from-blue-600 to-violet-600 text-transparent"> BRAINYBOT</span>
                 <div class="text-center">
                     <p class="text-2xl font-semibold text-yellow-400 tracking-wide uppercase mt-5 mb-3">
-                        Upload PDF | Ask Questions | Get Answers
+                        Upload Your Notes PDF | Get Summarized Notes Instantly
                     </p>
                     <h1 class="text-3xl text-white font-bold sm:text-5xl lg:text-2xl lg:leading-tight">
-                        Upload Your PDF and ask me anything about it.
+                        Upload Your PDF and get them summarized.
                     </h1>
                 </div>
             </div>
@@ -249,14 +249,14 @@
             </div>
             <!-- End Hero -->
             {% if notes_loaded %}
-            <div style="margin-left: 32%; margin-top: -2%;" class=" absolute right-4 z-50">
+            <div style="margin-left: 38%; margin-top: -2%;" class="right-4 z-50">
                 <form method="post" action="{{ url_for('get_notes') }}">
                     <button type="submit" class="px-4 py-3 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-green-600 text-white hover:bg-green-700 focus:outline-none focus:bg-green-700 disabled:opacity-50 disabled:pointer-events-none">
                         SUMMARIZE NOW
                     </button>
                 </form>
             </div>
-            <div style="margin-left: 42.5%; margin-top: -2%;" class=" absolute right-4 z-50">
+            <div style="margin-left: 51%; margin-top: -3.6%;" class="right-4 z-50">
                 <form action="/download_pdf" method="post">
                     <textarea name="notes_answer" style="display:none;">{{ notes_answer }}</textarea>
                     <button type="submit" class="px-4 py-3 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-red-600 text-white hover:bg-red-700 focus:outline-none focus:bg-red-700 disabled:opacity-50 disabled:pointer-events-none">

@@ -532,20 +532,14 @@ def download_pdf():
     pdf = CustomPDF()
     pdf.set_auto_page_break(auto=True, margin=15)
 
-    def draw_black_margin():
-        pdf.set_draw_color(0, 0, 0)  # Black color
-        pdf.set_line_width(1)       # Line thickness
-        pdf.rect(5, 5, 200, 287)    # Rectangle (x, y, width, height)
-
     # Add the starting page
     pdf.add_page()
-    draw_black_margin()
     pdf.set_font("Arial", size=14)
 
     # Split the text into lines so it wraps properly
     lines = notes.split('\n')
     for line in lines:
-        pdf.multi_cell(0, 10, line)
+        pdf.multi_cell(w=180, h=10, txt=part, align='L')
 
     # Output PDF to memory
     pdf_buffer = BytesIO()
@@ -555,7 +549,7 @@ def download_pdf():
     return send_file(
         pdf_buffer,
         as_attachment=True,
-        download_name=f"{notes_id}.pdf",
+        download_name=f"{notes_id or 'notes_output'}.pdf",
         mimetype='application/pdf'
     )
 
@@ -789,7 +783,6 @@ def download_flash():
         download_name=f"{flash_notes_id or 'flash_output'}.pdf",
         mimetype='application/pdf'
     )
-
 
 # —— clear flashcard PDF ——
 @app.route('/clear_flash')

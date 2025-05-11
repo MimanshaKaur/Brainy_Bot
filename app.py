@@ -539,7 +539,7 @@ def download_pdf():
     # Split the text into lines so it wraps properly
     lines = notes.split('\n')
     for line in lines:
-        pdf.multi_cell(w=180, h=10, txt=part, align='L')
+        pdf.multi_cell(w=180, h=10, txt=line, align='L')
 
     # Output PDF to memory
     pdf_buffer = BytesIO()

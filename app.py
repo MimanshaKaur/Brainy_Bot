@@ -3,6 +3,7 @@ import uuid
 import fitz
 from flask import Flask, render_template, request, redirect,url_for, session, flash, send_file
 from flask_sqlalchemy import SQLAlchemy
+from flask_session import Session
 from werkzeug.utils import secure_filename
 from chatbot import ask_gemini
 import whisper
@@ -15,7 +16,6 @@ load_dotenv()
 
 # Force whisper/ffmpeg to use the right binary
 os.environ["PATH"] += os.pathsep + r"C:/Users/Mimansha/OneDrive/Documents/GitHub/practice/ffmpeg-7.1.1-essentials_build/ffmpeg-7.1.1-essentials_build/bin"
-
 #--Database Logic--
 
 db = SQLAlchemy()
@@ -77,12 +77,13 @@ def create_app():
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['SECRET_KEY']   = os.getenv('SECRET_KEY')
     app.config['UPLOAD_FOLDER'] = 'static/uploads'
+    app.config['SESSION_TYPE'] = 'filesystem'  # or 'redis'
     os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
     db.init_app(app)
     return app
 
 app = create_app()
-
+Session(app)
 if not os.path.exists(app.config['UPLOAD_FOLDER']):
     os.makedirs(app.config['UPLOAD_FOLDER'])
 
@@ -382,6 +383,7 @@ def process_youtube():
     session['youtube_transcript'] = transcript
     session['video_id'] = video_id
     print("Transcript saved in session.")
+    print(session)
 
     # Save transcript to PDF
     transcript_path = Path("static/downloads")
@@ -389,6 +391,7 @@ def process_youtube():
     print("Transcript path created.")
 
     pdf_file = transcript_path / f"{video_id}.pdf"
+    print("generating PDF for Youtube")
     pdf = CustomPDF()
     pdf.set_auto_page_break(auto=True, margin=15)
 
@@ -537,9 +540,7 @@ def download_pdf():
     pdf.set_font("Arial", size=14)
 
     # Split the text into lines so it wraps properly
-    lines = notes.split('\n')
-    for line in lines:
-        pdf.multi_cell(w=180, h=10, txt=line, align='L')
+    pdf.multi_cell(w=180, h=10, txt= notes, align='J')
 
     # Output PDF to memory
     pdf_buffer = BytesIO()

@@ -768,10 +768,8 @@ def download_flash():
             pdf.ln(5)
             continue
 
-        wrapped = wrap_text_line(line, max_length=100)  # 100 works well with 180mm width
-        for part in wrapped:
-            pdf.multi_cell(w=180, h=10, txt=part, align='L')
-        pdf.ln(3)  # Space after each MCQ section
+        pdf.multi_cell(w=180, h=7, txt=line, align='L')
+        pdf.ln(2)  # Space after each flashcard
 
     # Output PDF to memory
     pdf_buffer = BytesIO()

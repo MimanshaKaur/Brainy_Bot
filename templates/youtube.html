@@ -220,7 +220,7 @@
                 <div class="max-w-[85rem] mx-auto px-4 sm:px-6 lg:px-8 py-10">
                     <div class="relative mx-auto max-w-4xl grid space-y-5 sm:space-y-10">
                             <!-- Form -->
-                            <form action="{{ url_for('process_youtube') }}" method="post" enctype="multipart/form-data">
+                            <form id="youtubeForm" action="{{ url_for('process_youtube') }}" method="post" enctype="multipart/form-data">
                                 <div class="mx-auto max-w-md sm:flex sm:space-x-2 p-3 bg-white border rounded-lg">
                                     <div class="pt-2 sm:pt-0 sm:ps-3 border-t border-gray-200 sm:border-t-0 sm:border-s w-full">
                                         <label for="hs-hero-email-1" class="block text-sm font-medium"><span
@@ -295,7 +295,7 @@
             <!-- Input -->
             <div style="margin-top: -5%;" class="relative mt-12">
                 <form method="post" action="{{ url_for('ask_youtube') }}">
-                <input style="position: absolute;" class="p-3 sm:p-4 pb-12 sm:pb-12 block h-30 w-full bg-black border-gray-900 rounded-lg sm:text-sm text-gray-100 focus:border-blue-500 focus:ring-blue-500" type="text" name="yt_question" placeholder="Ask Me Anything from PDF ..." required>
+                <input style="position: absolute;" class="p-3 sm:p-4 pb-12 sm:pb-12 block h-30 w-full bg-black border-gray-900 rounded-lg sm:text-sm text-gray-100 focus:border-blue-500 focus:ring-blue-500" type="text" name="yt_question" placeholder="Ask Me Anything from Video ..." required>
                 <!-- Send Button -->
                 <button type="submit" style="position:relative; margin-left: 95%; margin-top: 5%;" class="inline-flex shrink-0 justify-center items-center size-8 rounded-lg text-white bg-blue-600 hover:bg-blue-500 focus:z-10 focus:outline-hidden focus:bg-blue-500">
                     <svg class="shrink-0 size-3.5" xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
@@ -325,7 +325,14 @@
             <!-- End Input -->
         </div>
         {% endif %}
-
+        <!-- Loading Modal -->
+        <div id="loadingModal" style="display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); align-items: center; justify-content: center;">
+            <div style="background: black ; padding: 20px; border-radius: 10px; text-align: center; color: white">
+                <img src="/static/loading.gif" alt="Loading..." style="width: 150px; height: 150px; margin-left: 20%;">
+                <p>Processing your video, please wait...</p>
+            </div>
+        </div>
+  </div>
     <!-- End Textarea -->
     </div>
     <!-- End Content -->
@@ -333,6 +340,12 @@
     <!-- Required plugins -->
     <script src="https://cdn.jsdelivr.net/npm/preline/dist/index.js"></script>
     <script src="https://preline.co/assets/vendor/prism/prism.js"></script>
+    <script>
+        // Show loading modal on form submission
+        document.getElementById('youtubeForm').addEventListener('submit', function() {
+            document.getElementById('loadingModal').style.display = 'flex';
+        });
+    </script>
 
     </body>
 </html>

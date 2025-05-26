@@ -229,7 +229,7 @@
                 <div class="max-w-[85rem] mx-auto px-4 sm:px-6 lg:px-8 py-10">
                     <div class="relative mx-auto max-w-4xl grid space-y-5 sm:space-y-10">
                         <!-- Form -->
-                        <form action="{{ url_for('upload_notes') }}" method="post" enctype="multipart/form-data">
+                        <form id="notesForm" action="{{ url_for('upload_notes') }}" method="post" enctype="multipart/form-data">
                             <div class="mx-auto max-w-lg sm:flex sm:space-x-2 p-3 bg-white border rounded-lg">
                                 <div class="pt-2 sm:pt-0 sm:ps-3 border-t border-gray-200 sm:border-t-0 sm:border-s w-full">
                                     <label for="hs-hero-email-1" class="block text-sm font-medium"><span
@@ -280,12 +280,23 @@
                 <!-- End Chat Bubble -->
             </div>
         </div>
+        <!-- Loading Modal -->
+        <div id="loadingModal2" style="display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); align-items: center; justify-content: center;">
+            <div style="background: black ; padding: 20px; border-radius: 10px; text-align: center; color: white">
+                <img src="/static/loading.gif" alt="Loading..." style="width: 150px; height: 150px; margin-left: 20%;">
+                <p>Uploading your PDF, please wait...</p>
+            </div>
+        </div>
     </div>
     <!-- End Content -->
     <!-- ========== END MAIN CONTENT ========== -->
     <!-- Required plugins -->
     <script src="https://cdn.jsdelivr.net/npm/preline/dist/index.js"></script>
     <script src="https://preline.co/assets/vendor/prism/prism.js"></script>
-
+    <script>
+        document.getElementById('notesForm').addEventListener('submit', function() {
+        document.getElementById('loadingModal2').style.display = 'flex';
+        });
+    </script>
     </body>
 </html>

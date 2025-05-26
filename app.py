@@ -744,24 +744,35 @@ def get_flash():
         flash('You need to login first', 'warning')
         return redirect('/login')
     if request.method == 'POST':
-        flash_notes_question = "Please generate flashcards from this text only and NO EXTRA explanation needed."
-        print("flashcard question:")
+        # Get number of flashcards from the form
+        flash_count = request.form.get('flash_count', 10)
+        try:
+            flash_count = int(flash_count)
+        except ValueError:
+            flash_count = 10  # fallback default
+
+        print(f"User requested {flash_count} flashcards.")
+
+        flash_notes_question = (
+            f"Please generate exactly {flash_count} flashcards from this text. Do not provide extra explanation, just flashcard question and answer format."
+        )
 
         if 'flash_notes_id' in session:
-            # fetch the stored text; if missing, treat as no PDF
             flash_notes_content = flash_notes_texts.get(session['flash_notes_id'], "")
             prompt = (
-                "Use the following PDF content and generate Flashcards only. NO EXTRA explanation needed.:\n\n"
+                f"Use the following PDF content and generate exactly {flash_count} flashcards in question-answer format. "
+                "No extra explanation or notes:\n\n"
                 f"{flash_notes_content}\n\nQuestion: {flash_notes_question}"
             )
             flash_notes_answer = ask_gemini(prompt)
-            print('flashcards created.')
-            return render_template( 'flashcard.html', flash_loaded=('flash_notes_id' in session), flash_notes_answer=flash_notes_answer)
+            print('Flashcards created.')
+            return render_template('flashcard.html', flash_loaded=True, flash_notes_answer=flash_notes_answer)
         else:
-            print("No PDF  for mcqs loaded. Please upload a PDF first.")
+            print("No PDF for flashcards loaded. Please upload a PDF first.")
             return redirect(url_for('get_flash'))
-    # GET request will render a question form
-    return render_template( 'flashcard.html', flash_loaded=('flash_notes_id' in session))
+
+    # GET request
+    return render_template('flashcard.html', flash_loaded=('flash_notes_id' in session))
 
 @app.route('/download_flash', methods=['POST'])
 def download_flash():

@@ -265,6 +265,8 @@
             {% if flash_loaded %}
             <div style="margin-left: 43%; margin-top: -2%;" class="right-4 z-50">
                 <form method="post" action="{{ url_for('get_flash') }}">
+                    <label style="background-color: black; color: white; padding: 10px; border-radius:5px; margin-left: -25.5%;" for="flash_count">How Many Flashcards Do You Want?</label>
+                    <input style="background-color: transparent; border: 2px solid white; padding: 7px; color: white; border-radius: 5px;" type="number" name="flash_count" id="flash_count" min="1" max="50" value="10" required>
                     <button type="submit" class="px-4 py-3 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-green-600 text-white hover:bg-green-700 focus:outline-none focus:bg-green-700 disabled:opacity-50 disabled:pointer-events-none">
                         GENERATE FLASHCARDs
                     </button>

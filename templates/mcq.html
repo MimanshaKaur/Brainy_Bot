@@ -263,21 +263,23 @@
             </div>
             <!-- End Hero -->
             {% if mcq_loaded %}
-            <div style="margin-left: 38%; margin-top: -2%;" class="right-4 z-50">
+            <div style="margin-left: 45%; margin-top: -2%;" class="right-4 z-50">
                 <form method="post" action="{{ url_for('get_mcq') }}">
                     <button type="submit" class="px-4 py-3 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-green-600 text-white hover:bg-green-700 focus:outline-none focus:bg-green-700 disabled:opacity-50 disabled:pointer-events-none">
                         GENERATE MCQs
                     </button>
                 </form>
             </div>
-            <div style="margin-left: 50%; margin-top: -3.6%;" class="right-4 z-50">
+            {% endif %}
+            {% if mcq_notes_answer %}
+                <div style="margin-left: 44.55%; margin-top: 1%;" class="right-4 z-50">
                 <form action="/download_mcq" method="post">
                     <textarea name="mcq_notes_answer" style="display:contents;">{{ mcq_notes_answer }}</textarea>
                     <button type="submit" class="px-4 py-3 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-red-600 text-white hover:bg-red-700 focus:outline-none focus:bg-red-700 disabled:opacity-50 disabled:pointer-events-none">
                         DOWNLOAD MCQs
                     </button>
                 </form>
-            </div>
+                </div>
             {% endif %}
             <!--Details section-->
             <div class=" mt-5 space-y-0">

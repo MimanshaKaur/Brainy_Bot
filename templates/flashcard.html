@@ -263,14 +263,16 @@
             </div>
             <!-- End Hero -->
             {% if flash_loaded %}
-            <div style="margin-left: 34%; margin-top: -2%;" class="right-4 z-50">
+            <div style="margin-left: 43%; margin-top: -2%;" class="right-4 z-50">
                 <form method="post" action="{{ url_for('get_flash') }}">
                     <button type="submit" class="px-4 py-3 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-green-600 text-white hover:bg-green-700 focus:outline-none focus:bg-green-700 disabled:opacity-50 disabled:pointer-events-none">
                         GENERATE FLASHCARDs
                     </button>
                 </form>
             </div>
-            <div style="margin-left: 50%; margin-top: -3.6%;" class="right-4 z-50">
+            {% endif %}
+            {% if flash_notes_answer %}
+            <div style="margin-left: 42.55%; margin-top: 1%;" class="right-4 z-50">
                 <form action="/download_flash" method="post">
                     <textarea name="flash_notes_answer" style="display:contents;">{{ flash_notes_answer }}</textarea>
                     <button type="submit" class="px-4 py-3 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-red-600 text-white hover:bg-red-700 focus:outline-none focus:bg-red-700 disabled:opacity-50 disabled:pointer-events-none">

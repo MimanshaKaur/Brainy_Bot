@@ -618,24 +618,37 @@ def get_mcq():
         flash('You need to login first', 'warning')
         return redirect('/login')
     if request.method == 'POST':
-        mcq_notes_question = "Please generate 10 MCQs each with 4 options in separate lines from this PDF Content. Also show its correct answer only without explanation. just show mcqs with options and correct answer no extra text."
-        print("mcq-Notes question:")
+        # Get number of MCQs from form input
+        mcq_count = request.form.get('mcq_count', 10)
+        try:
+            mcq_count = int(mcq_count)
+        except ValueError:
+            mcq_count = 10  # fallback to default
+
+        print(f"User requested {mcq_count} MCQs.")
+
+        # Define the base instruction
+        mcq_notes_question = (
+            f"Please generate {mcq_count} MCQs each with 4 options in separate lines from this PDF Content. "
+            "Also show its correct answer only without explanation. Just show the MCQs with options and correct answer, no extra text."
+        )
 
         if 'mcq_notes_id' in session:
-            # fetch the stored text; if missing, treat as no PDF
             mcq_notes_content = mcq_notes_texts.get(session['mcq_notes_id'], "")
             prompt = (
-                "Use the following PDF content and generate 10 MCQs with 4 options of each in separate line. Also show correct answer of each MCQ without explanation and no extra text, just show the mcqs with options and correct answer:\n\n"
+                f"Use the following PDF content and generate {mcq_count} MCQs with 4 options of each in separate lines. "
+                "Also show correct answer of each MCQ without explanation and no extra text:\n\n"
                 f"{mcq_notes_content}\n\nQuestion: {mcq_notes_question}"
             )
             mcq_notes_answer = ask_gemini(prompt)
-            print('mcq created.')
-            return render_template( 'mcq.html', mcq_loaded=('mcq_notes_id' in session), mcq_notes_answer=mcq_notes_answer)
+            print('MCQs created.')
+            return render_template('mcq.html', mcq_loaded=True, mcq_notes_answer=mcq_notes_answer)
         else:
-            print("No PDF  for mcqs loaded. Please upload a PDF first.")
+            print("No PDF for MCQs loaded. Please upload a PDF first.")
             return redirect(url_for('get_mcq'))
-    # GET request will render a question form
-    return render_template( 'mcq.html', mcq_loaded=('mcq_notes_id' in session))
+
+    # GET request will render the form
+    return render_template('mcq.html', mcq_loaded=('mcq_notes_id' in session))
 
 # —— clear MCQ PDF ——
 @app.route('/clear_mcq')

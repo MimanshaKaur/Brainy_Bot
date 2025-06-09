@@ -15,7 +15,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Force whisper/ffmpeg to use the right binary
-os.environ["PATH"] += os.pathsep + r"C:/Users/Mimansha/OneDrive/Documents/GitHub/practice/ffmpeg-7.1.1-essentials_build/ffmpeg-7.1.1-essentials_build/bin"
+os.environ["PATH"] += os.pathsep + r"C:/Users/Mimansha/OneDrive/Documents/GitHub/BRAINYBOT/ffmpeg-7.1.1-essentials_build/ffmpeg-7.1.1-essentials_build/bin"
 #--Database Logic--
 
 db = SQLAlchemy()
@@ -339,7 +339,7 @@ def process_youtube():
     video_id = match.group(1)
     base_filename = os.path.join("uploads", video_id)
 
-    ffmpeg_path = r"C:/Users/Mimansha/OneDrive/Documents/GitHub/practice/ffmpeg-7.1.1-essentials_build/ffmpeg-7.1.1-essentials_build/bin"  # your path
+    ffmpeg_path = r"C:/Users/Mimansha/OneDrive/Documents/GitHub/BRAINYBOT/ffmpeg-7.1.1-essentials_build/ffmpeg-7.1.1-essentials_build/bin"  # your path
 
     ydl_opts = {
         'format': 'bestaudio/best',
